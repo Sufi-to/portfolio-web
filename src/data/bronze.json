@@ -1,0 +1,613 @@
+{
+  "generatedAt": "2026-10-26",
+  "identities": "^(Sufi-to|Tomas Teclehaimanot|Tomas Debrezion|Tomas Tecle)$",
+  "totalCommits": 1289,
+  "repos": [
+    {
+      "repo": "Sufi-to/alx-system_engineering-devops",
+      "stratum": "web",
+      "commits": 241,
+      "first": "2023-03-07",
+      "last": "2024-06-14"
+    },
+    {
+      "repo": "Sufi-to/alx-low_level_programming",
+      "stratum": "systems",
+      "commits": 309,
+      "first": "2023-03-16",
+      "last": "2024-05-09"
+    },
+    {
+      "repo": "Sufi-to/django_ecommerce_project",
+      "stratum": "web",
+      "commits": 3,
+      "first": "2023-08-23",
+      "last": "2023-08-23"
+    },
+    {
+      "repo": "Sufi-to/simple_shell",
+      "stratum": "systems",
+      "commits": 3,
+      "first": "2023-12-15",
+      "last": "2023-12-15"
+    },
+    {
+      "repo": "Sufi-to/alx-higher_level_programming",
+      "stratum": "web",
+      "commits": 265,
+      "first": "2024-01-03",
+      "last": "2024-05-30"
+    },
+    {
+      "repo": "Sufi-to/sorting_algorithms",
+      "stratum": "systems",
+      "commits": 18,
+      "first": "2024-02-16",
+      "last": "2024-02-21"
+    },
+    {
+      "repo": "Sufi-to/AirBnB_clone_v2",
+      "stratum": "web",
+      "commits": 32,
+      "first": "2024-04-14",
+      "last": "2024-05-20"
+    },
+    {
+      "repo": "Sufi-to/AirBnB_clone_v4",
+      "stratum": "web",
+      "commits": 18,
+      "first": "2024-06-01",
+      "last": "2024-06-27"
+    },
+    {
+      "repo": "Sufi-to/Enmar-",
+      "stratum": "web",
+      "commits": 11,
+      "first": "2024-06-20",
+      "last": "2024-07-14"
+    },
+    {
+      "repo": "Sufi-to/alx-backend-javascript",
+      "stratum": "web",
+      "commits": 75,
+      "first": "2024-07-22",
+      "last": "2024-09-21"
+    },
+    {
+      "repo": "Sufi-to/alx-interview",
+      "stratum": "web",
+      "commits": 23,
+      "first": "2024-07-28",
+      "last": "2024-10-04"
+    },
+    {
+      "repo": "Sufi-to/alx-backend-python",
+      "stratum": "web",
+      "commits": 43,
+      "first": "2024-08-01",
+      "last": "2024-08-31"
+    },
+    {
+      "repo": "Sufi-to/alx-backend-storage",
+      "stratum": "web",
+      "commits": 38,
+      "first": "2024-08-07",
+      "last": "2024-08-17"
+    },
+    {
+      "repo": "Sufi-to/alx-backend",
+      "stratum": "web",
+      "commits": 40,
+      "first": "2024-08-17",
+      "last": "2024-09-26"
+    },
+    {
+      "repo": "Sufi-to/alx-backend-user-data",
+      "stratum": "web",
+      "commits": 64,
+      "first": "2024-08-28",
+      "last": "2024-09-13"
+    },
+    {
+      "repo": "Sufi-to/alx-files_manager",
+      "stratum": "web",
+      "commits": 5,
+      "first": "2024-09-26",
+      "last": "2024-10-03"
+    },
+    {
+      "repo": "NeftalemMG/TooB",
+      "stratum": "web",
+      "commits": 3,
+      "first": "2024-10-08",
+      "last": "2024-10-24"
+    },
+    {
+      "repo": "Sufi-to/Subscription_tracker_api",
+      "stratum": "web",
+      "commits": 2,
+      "first": "2025-03-02",
+      "last": "2025-03-02"
+    },
+    {
+      "repo": "Sufi-to/prompt-engineering",
+      "stratum": "ai",
+      "commits": 3,
+      "first": "2025-04-23",
+      "last": "2025-04-23"
+    },
+    {
+      "repo": "MIT-Emerging-Talent/ET6-CDSP-group-06-repo",
+      "stratum": "ai",
+      "commits": 1,
+      "first": "2025-06-03",
+      "last": "2025-06-03"
+    },
+    {
+      "repo": "Sufi-to/Object_detection_with_approximate_valuations",
+      "stratum": "ai",
+      "commits": 37,
+      "first": "2025-07-24",
+      "last": "2025-09-05"
+    },
+    {
+      "repo": "Sufi-to/Rule_based_credit_scoring_payslip",
+      "stratum": "ai",
+      "commits": 4,
+      "first": "2025-09-06",
+      "last": "2025-09-06"
+    },
+    {
+      "repo": "Sufi-to/libft",
+      "stratum": "systems",
+      "commits": 1,
+      "first": "2025-11-06",
+      "last": "2025-11-06"
+    },
+    {
+      "repo": "Sufi-to/ft_printf",
+      "stratum": "systems",
+      "commits": 4,
+      "first": "2025-11-19",
+      "last": "2025-11-24"
+    },
+    {
+      "repo": "Sufi-to/FinRadar",
+      "stratum": "ai",
+      "commits": 12,
+      "first": "2026-06-10",
+      "last": "2026-06-15"
+    },
+    {
+      "repo": "Sufi-to/EndToEndRag",
+      "stratum": "ai",
+      "commits": 17,
+      "first": "2026-07-07",
+      "last": "2026-07-24"
+    },
+    {
+      "repo": "Sufi-to/databricks_bootcamp_homework-1",
+      "stratum": "ai",
+      "commits": 6,
+      "first": "2026-08-06",
+      "last": "2026-08-06"
+    },
+    {
+      "repo": "Sufi-to/databricks_bootcamp_homework-2",
+      "stratum": "ai",
+      "commits": 4,
+      "first": "2026-08-08",
+      "last": "2026-08-09"
+    },
+    {
+      "repo": "Sufi-to/databricks_bootcamp-2",
+      "stratum": "ai",
+      "commits": 3,
+      "first": "2026-08-09",
+      "last": "2026-08-09"
+    },
+    {
+      "repo": "Sufi-to/hn-hiring-observatory",
+      "stratum": "ai",
+      "commits": 4,
+      "first": "2026-10-25",
+      "last": "2026-10-25"
+    }
+  ],
+  "months": [
+    {
+      "month": "2023-03",
+      "systems": 117,
+      "web": 97,
+      "ai": 0,
+      "repos": [
+        "alx-low_level_programming",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2023-04",
+      "systems": 102,
+      "web": 0,
+      "ai": 0,
+      "repos": [
+        "alx-low_level_programming"
+      ]
+    },
+    {
+      "month": "2023-05",
+      "systems": 15,
+      "web": 1,
+      "ai": 0,
+      "repos": [
+        "alx-low_level_programming",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2023-06",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2023-07",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2023-08",
+      "systems": 0,
+      "web": 3,
+      "ai": 0,
+      "repos": [
+        "django_ecommerce_project"
+      ]
+    },
+    {
+      "month": "2023-09",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2023-10",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2023-11",
+      "systems": 42,
+      "web": 0,
+      "ai": 0,
+      "repos": [
+        "alx-low_level_programming"
+      ]
+    },
+    {
+      "month": "2023-12",
+      "systems": 3,
+      "web": 0,
+      "ai": 0,
+      "repos": [
+        "simple_shell"
+      ]
+    },
+    {
+      "month": "2024-01",
+      "systems": 27,
+      "web": 118,
+      "ai": 0,
+      "repos": [
+        "alx-higher_level_programming",
+        "alx-low_level_programming"
+      ]
+    },
+    {
+      "month": "2024-02",
+      "systems": 20,
+      "web": 75,
+      "ai": 0,
+      "repos": [
+        "alx-higher_level_programming",
+        "alx-low_level_programming",
+        "alx-system_engineering-devops",
+        "sorting_algorithms"
+      ]
+    },
+    {
+      "month": "2024-03",
+      "systems": 2,
+      "web": 15,
+      "ai": 0,
+      "repos": [
+        "alx-higher_level_programming",
+        "alx-low_level_programming",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2024-04",
+      "systems": 0,
+      "web": 117,
+      "ai": 0,
+      "repos": [
+        "AirBnB_clone_v2",
+        "alx-higher_level_programming",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2024-05",
+      "systems": 2,
+      "web": 69,
+      "ai": 0,
+      "repos": [
+        "AirBnB_clone_v2",
+        "alx-higher_level_programming",
+        "alx-low_level_programming",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2024-06",
+      "systems": 0,
+      "web": 70,
+      "ai": 0,
+      "repos": [
+        "AirBnB_clone_v4",
+        "Enmar-",
+        "alx-system_engineering-devops"
+      ]
+    },
+    {
+      "month": "2024-07",
+      "systems": 0,
+      "web": 51,
+      "ai": 0,
+      "repos": [
+        "Enmar-",
+        "alx-backend-javascript",
+        "alx-interview"
+      ]
+    },
+    {
+      "month": "2024-08",
+      "systems": 0,
+      "web": 161,
+      "ai": 0,
+      "repos": [
+        "alx-backend",
+        "alx-backend-javascript",
+        "alx-backend-python",
+        "alx-backend-storage",
+        "alx-backend-user-data",
+        "alx-interview"
+      ]
+    },
+    {
+      "month": "2024-09",
+      "systems": 0,
+      "web": 76,
+      "ai": 0,
+      "repos": [
+        "alx-backend",
+        "alx-backend-javascript",
+        "alx-backend-user-data",
+        "alx-files_manager",
+        "alx-interview"
+      ]
+    },
+    {
+      "month": "2024-10",
+      "systems": 0,
+      "web": 8,
+      "ai": 0,
+      "repos": [
+        "TooB",
+        "alx-files_manager",
+        "alx-interview"
+      ]
+    },
+    {
+      "month": "2024-11",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2024-12",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2025-01",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2025-02",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2025-03",
+      "systems": 0,
+      "web": 2,
+      "ai": 0,
+      "repos": [
+        "Subscription_tracker_api"
+      ]
+    },
+    {
+      "month": "2025-04",
+      "systems": 0,
+      "web": 0,
+      "ai": 3,
+      "repos": [
+        "prompt-engineering"
+      ]
+    },
+    {
+      "month": "2025-05",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2025-06",
+      "systems": 0,
+      "web": 0,
+      "ai": 1,
+      "repos": [
+        "ET6-CDSP-group-06-repo"
+      ]
+    },
+    {
+      "month": "2025-07",
+      "systems": 0,
+      "web": 0,
+      "ai": 9,
+      "repos": [
+        "Object_detection_with_approximate_valuations"
+      ]
+    },
+    {
+      "month": "2025-08",
+      "systems": 0,
+      "web": 0,
+      "ai": 25,
+      "repos": [
+        "Object_detection_with_approximate_valuations"
+      ]
+    },
+    {
+      "month": "2025-09",
+      "systems": 0,
+      "web": 0,
+      "ai": 7,
+      "repos": [
+        "Object_detection_with_approximate_valuations",
+        "Rule_based_credit_scoring_payslip"
+      ]
+    },
+    {
+      "month": "2025-10",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2025-11",
+      "systems": 5,
+      "web": 0,
+      "ai": 0,
+      "repos": [
+        "ft_printf",
+        "libft"
+      ]
+    },
+    {
+      "month": "2025-12",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-01",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-02",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-03",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-04",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-05",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-06",
+      "systems": 0,
+      "web": 0,
+      "ai": 12,
+      "repos": [
+        "FinRadar"
+      ]
+    },
+    {
+      "month": "2026-07",
+      "systems": 0,
+      "web": 0,
+      "ai": 17,
+      "repos": [
+        "EndToEndRag"
+      ]
+    },
+    {
+      "month": "2026-08",
+      "systems": 0,
+      "web": 0,
+      "ai": 13,
+      "repos": [
+        "databricks_bootcamp-2",
+        "databricks_bootcamp_homework-1",
+        "databricks_bootcamp_homework-2"
+      ]
+    },
+    {
+      "month": "2026-09",
+      "systems": 0,
+      "web": 0,
+      "ai": 0,
+      "repos": []
+    },
+    {
+      "month": "2026-10",
+      "systems": 0,
+      "web": 0,
+      "ai": 4,
+      "repos": [
+        "hn-hiring-observatory"
+      ]
+    }
+  ]
+}

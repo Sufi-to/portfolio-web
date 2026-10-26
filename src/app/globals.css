@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/*
+  Refinery tokens.
+  Slate-ore base, quartz text. Three metals mark depth (gold, silver, bronze)
+  and are used for nothing else. Trace blue marks anything live or focused.
+*/
+:root {
+  --slate: #1a1e21;
+  --slab: #22272b;
+  --slab-2: #2a3035;
+  --seam: #353c42;
+  --quartz: #e6eae8;
+  --shale: #9aa4a9;
+  --gold: #d9b65b;
+  --silver: #bcc5cc;
+  --bronze: #c08a63;
+  --trace: #7cc2e3;
+  --reject: #e07a7a;
+  --stratum-systems: #4b565e;
+  --stratum-web: #7f8d95;
+  --stratum-ai: #dde3e0;
+  --metal: var(--gold);
+  color-scheme: dark;
+}
+
+[data-depth="silver"] { --metal: var(--silver); }
+[data-depth="bronze"] { --metal: var(--bronze); }
+
+@theme inline {
+  --color-slate: var(--slate);
+  --color-slab: var(--slab);
+  --color-slab-2: var(--slab-2);
+  --color-seam: var(--seam);
+  --color-quartz: var(--quartz);
+  --color-shale: var(--shale);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
+  --color-trace: var(--trace);
+  --color-reject: var(--reject);
+  --color-metal: var(--metal);
+  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Unlayered rules would beat Tailwind utilities, so everything sits in layers. */
+@layer base {
+html {
+  background: var(--slate);
+  color: var(--quartz);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  min-height: 100dvh;
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.55;
+  font-stretch: 100%;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--trace) 35%, transparent);
+  color: var(--quartz);
+}
+
+/* Visible, consistent keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--trace);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+a { color: inherit; }
+
+}
+
+@layer components {
+/* Type scale: 13 / 15 / 17 / 21 / 28 / 40 / 64. */
+.t-display {
+  font-size: clamp(2.5rem, 6.4vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  font-weight: 560;
+  font-stretch: 116%;
+}
+.t-h1, .t-h2 { text-wrap: balance; }
+.t-h1 { font-size: clamp(2rem, 4vw, 2.5rem); line-height: 1.05; font-weight: 560; font-stretch: 112%; letter-spacing: -0.015em; }
+.t-h2 { font-size: 1.75rem; line-height: 1.15; font-weight: 540; font-stretch: 110%; letter-spacing: -0.01em; }
+.t-h3 { font-size: 1.3125rem; line-height: 1.25; font-weight: 560; font-stretch: 104%; }
+.t-small { font-size: 0.9375rem; line-height: 1.5; }
+.t-micro { font-size: 0.8125rem; line-height: 1.4; }
+
+/* Data: field paths, numbers, code. Only used where the content is data. */
+.t-data {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Raw text is set narrow; refined text is set wide. */
+.t-raw { font-stretch: 68%; font-weight: 400; letter-spacing: 0.005em; }
+
+.measure { max-width: 64ch; }
+
+/* Expandable panels animate their height with grid rows. */
+.reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal[data-open="true"] { grid-template-rows: 1fr; }
+.reveal > * { overflow: hidden; min-height: 0; }
+
+.hairline { border-color: var(--seam); }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
