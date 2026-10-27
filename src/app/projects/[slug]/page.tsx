@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects, getProject, domainLabel } from "@/content/projects";
 import { ProjectDetail } from "@/components/ProjectDetail";
+import { Hallmark } from "@/components/Hallmark";
 
 export const dynamicParams = false;
 
@@ -33,6 +34,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <p className="mt-3 t-small text-shale">
         {p.domains.map((d) => domainLabel[d]).join(" and ")}, {p.year}
       </p>
+      <Hallmark project={p} className="mt-4" />
       <div className="mt-10">
         <ProjectDetail project={p} depth="bronze" showGold />
       </div>

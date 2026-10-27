@@ -4,6 +4,7 @@ import { DepthProvider } from "@/components/DepthProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CommandPalette } from "@/components/CommandPalette";
+import { ConsoleRecord } from "@/components/ConsoleRecord";
 import { profile } from "@/content/profile";
 
 export const metadata: Metadata = {
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <SiteFooter />
           <CommandPalette />
+          <ConsoleRecord />
         </DepthProvider>
       </body>
     </html>

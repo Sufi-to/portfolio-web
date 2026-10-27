@@ -276,7 +276,7 @@ export function ExtractionHero() {
           hiring posts on Databricks, a stock research tool that discards unsourced model claims, and a gateway that keeps LLM
           endpoints safe when prompts or providers misbehave. I started out writing a Unix shell in C.
         </p>
-        <div className="flex flex-wrap content-start items-start gap-3">
+        <div className="flex flex-wrap content-start items-center gap-3">
           <Link
             href="/projects/"
             className="rounded-md bg-quartz px-4 py-2.5 font-[560] text-slate transition-colors hover:bg-gold"

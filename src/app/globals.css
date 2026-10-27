@@ -122,6 +122,60 @@ a { color: inherit; }
 
 .hairline { border-color: var(--seam); }
 
+/* Hallmarks read as struck into the surface, not printed on it. */
+.hallmark {
+  background: color-mix(in srgb, var(--slate) 70%, black);
+  box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.35), 0 1px 0 rgb(255 255 255 / 0.03);
+}
+
+/* Core samples: the first scenario's route draws itself on hover. */
+.core-trace {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.core rect { transition: stroke 300ms, stroke-opacity 300ms; }
+.group:hover .core-trace,
+.group:focus-within .core-trace { stroke-dashoffset: 0; }
+.group:hover .core-on,
+.group:focus-within .core-on { stroke: var(--trace); stroke-opacity: 1; }
+
+}
+
+/*
+  Ore grain: a faint fixed noise over the slate so the ground reads as
+  material. Pointer-transparent and below every interactive layer.
+*/
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/*
+  Section headings refine as they enter the viewport: narrow (raw) to wide
+  (refined), the same type rule the hero uses. Scroll-driven, no JS; browsers
+  without scroll timelines just show the refined state.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    main section h2.t-h2,
+    main section h2 > .t-h2,
+    main figcaption > .t-h2 {
+      animation: refine linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+  }
+}
+@keyframes refine {
+  from { font-stretch: 72%; opacity: 0.55; letter-spacing: 0.01em; }
+  to { font-stretch: 110%; opacity: 1; letter-spacing: -0.01em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
