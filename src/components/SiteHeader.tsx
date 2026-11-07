@@ -33,6 +33,11 @@ export function SiteHeader() {
   const running = run !== null && run.step < run.total;
   const crumb = path === "/" ? "/" : path.replace(/\/$/, "");
 
+  // The 404 page is built once and served for every unknown address, so the
+  // path is only known in the browser. Rendering it here keeps hydration clean.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <header className="sticky top-0 z-40 border-b border-seam bg-slate/95 backdrop-blur-md">
       {/* A one-pixel line in the current depth's metal. */}
@@ -57,7 +62,7 @@ export function SiteHeader() {
               <span className="md:hidden">{profile.shortName}</span>
             </span>
           </Link>
-          <span className="hidden max-w-[11rem] min-w-0 truncate rounded-sm border border-seam px-1.5 t-data text-label text-shale xl:block">{crumb}</span>
+          {mounted && <span className="hidden max-w-[11rem] min-w-0 truncate rounded-sm border border-seam px-1.5 t-data text-label text-shale xl:block">{crumb}</span>}
         </div>
 
         <nav aria-label="Main" className="hidden shrink-0 lg:block">
