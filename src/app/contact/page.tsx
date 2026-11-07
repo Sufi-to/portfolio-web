@@ -16,7 +16,11 @@ export default function ContactPage() {
     <>
       <div className="page">
       <div className="page-col page-side">
-      <PageIntro name="contact_txt" title="Contact" lead="Email is the fastest way to reach me." />
+      <PageIntro name="contact_txt" title="Contact" lead="Email is the fastest way to reach me.">
+        <p>
+          Based in {profile.location}.{profile.available && " Open to work."}
+        </p>
+      </PageIntro>
       </div>
       <Panel name="contact_out" meta="say hi" tag="DATA" portId="links" in="left" out="right">
       <ul>

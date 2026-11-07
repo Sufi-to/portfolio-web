@@ -1,8 +1,29 @@
 {
   "checkedAt": "2026-11-07",
-  "total": 22,
-  "passed": 22,
+  "total": 29,
+  "passed": 29,
   "results": {
+    "Sufi-to/research_match/README.md#111:36 verified profiles and 2,097 eligible publications in Gold": {
+      "ok": true
+    },
+    "Sufi-to/research_match/sql/01_create_bronze_tables.sql#:Eleven Bronze tables for the raw sources": {
+      "ok": true
+    },
+    "Sufi-to/research_match/sql/04_create_silver_tables.sql#23:Identity decisions are recorded in their own Silver table": {
+      "ok": true
+    },
+    "Sufi-to/research_match/app/researchmatch/matching_policy.py#484:Thin evidence returns insufficient_evidence, not candidates": {
+      "ok": true
+    },
+    "Sufi-to/research_match/app/researchmatch/team.py#1:Suggested teams are built only from an existing match": {
+      "ok": true
+    },
+    "Sufi-to/research_match/tests#:266 test functions across the test suite": {
+      "ok": true
+    },
+    "Sufi-to/research_match/README.md#97:No accuracy claim until relevance is labelled independently": {
+      "ok": true
+    },
     "Sufi-to/hn-hiring-observatory/app/backend.py#44:Generated SQL must parse to exactly one SELECT or UNION": {
       "ok": true
     },

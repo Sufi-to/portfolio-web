@@ -33,7 +33,8 @@ const pythonList = (text, name) => {
 async function check(e) {
   if (e.count) {
     const tree = JSON.parse(await fetchText(`https://api.github.com/repos/${e.repo}/git/trees/${e.sha}?recursive=1`)).tree;
-    const files = tree.filter((f) => f.type === "blob" && f.path.startsWith(`${e.path}/`) && f.path.endsWith(".py"));
+    // A file path counts inside that file; a folder counts across its Python files.
+    const files = tree.filter((f) => f.type === "blob" && (f.path === e.path || (f.path.startsWith(`${e.path}/`) && f.path.endsWith(".py"))));
     const texts = await Promise.all(files.map((f) => raw(e, f.path)));
     const found = texts.reduce((n, t) => n + t.split(e.count.pattern).length - 1, 0);
     if (found !== e.count.equals) throw new Error(`expected ${e.count.equals} of "${e.count.pattern}", found ${found}`);

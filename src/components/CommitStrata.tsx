@@ -23,8 +23,7 @@ const MARKS: { month: string; text: string }[] = [
   { month: "2023-03", text: "C and Unix" },
   { month: "2024-01", text: "Python, web, backend" },
   { month: "2025-07", text: "Assay" },
-  { month: "2026-06", text: "FinRadar" },
-  { month: "2026-10", text: "HN Observatory" },
+  { month: "2026-10", text: "FinRadar, ResearchMatch, HN Observatory" },
 ];
 
 /**

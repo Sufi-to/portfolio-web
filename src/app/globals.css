@@ -214,7 +214,7 @@ a { color: inherit; }
   html:not([data-mode="read"]) .stage {
     display: block;
     position: relative;
-    height: 52.75rem;
+    height: 57.5rem;
     padding: 0;
   }
   html:not([data-mode="read"]) .stage > .op {

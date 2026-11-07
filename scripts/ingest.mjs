@@ -1,6 +1,6 @@
-// Bronze ingestion: read real git history from Tomas's repositories and
-// write a small, committed JSON snapshot the site refines into the commit
-// timeline. Run with `npm run ingest`; the site never fetches GitHub at runtime.
+// Bronze ingestion: read real git history and profile data from Tomas's
+// GitHub and write a small, committed JSON snapshot the site refines into the
+// commit timeline and the About page. Run with `npm run ingest`; the site never fetches GitHub at runtime.
 //
 // Only commits authored under Tomas's own identities are counted.
 
@@ -14,39 +14,81 @@ const OUT = join(process.cwd(), "src", "data", "bronze.json");
 // Author names Tomas has committed under (verified in the audit).
 const IDENTITY = /^(Sufi-to|Tomas Teclehaimanot|Tomas Debrezion|Tomas Tecle)$/;
 
-// Each repository and the stratum it belongs to on the timeline.
-const REPOS = [
-  ["Sufi-to/simple_shell", "systems"],
-  ["Sufi-to/sorting_algorithms", "systems"],
-  ["Sufi-to/alx-low_level_programming", "systems"],
-  ["Sufi-to/libft", "systems"],
-  ["Sufi-to/ft_printf", "systems"],
-  ["Sufi-to/django_ecommerce_project", "web"],
-  ["Sufi-to/alx-higher_level_programming", "web"],
-  ["Sufi-to/alx-system_engineering-devops", "web"],
-  ["Sufi-to/AirBnB_clone_v2", "web"],
-  ["Sufi-to/AirBnB_clone_v4", "web"],
-  ["Sufi-to/Enmar-", "web"],
-  ["Sufi-to/alx-backend-storage", "web"],
-  ["Sufi-to/alx-backend-python", "web"],
-  ["Sufi-to/alx-backend-user-data", "web"],
-  ["Sufi-to/alx-backend-javascript", "web"],
-  ["Sufi-to/alx-backend", "web"],
-  ["Sufi-to/alx-files_manager", "web"],
-  ["Sufi-to/alx-interview", "web"],
-  ["NeftalemMG/TooB", "web"],
-  ["Sufi-to/Subscription_tracker_api", "web"],
-  ["Sufi-to/prompt-engineering", "ai"],
-  ["MIT-Emerging-Talent/ET6-CDSP-group-06-repo", "ai"],
-  ["Sufi-to/Object_detection_with_approximate_valuations", "ai"],
-  ["Sufi-to/Rule_based_credit_scoring_payslip", "ai"],
-  ["Sufi-to/FinRadar", "ai"],
-  ["Sufi-to/EndToEndRag", "ai"],
-  ["Sufi-to/databricks_bootcamp_homework-1", "ai"],
-  ["Sufi-to/databricks_bootcamp_homework-2", "ai"],
-  ["Sufi-to/databricks_bootcamp-2", "ai"],
-  ["Sufi-to/hn-hiring-observatory", "ai"],
-];
+// The strata repositories belong to on the timeline. Repositories not listed
+// here are found on GitHub and placed by language and subject (see stratumFor).
+const STRATA = {
+  "Sufi-to/simple_shell": "systems",
+  "Sufi-to/sorting_algorithms": "systems",
+  "Sufi-to/alx-low_level_programming": "systems",
+  "Sufi-to/libft": "systems",
+  "Sufi-to/ft_printf": "systems",
+  "Sufi-to/django_ecommerce_project": "web",
+  "Sufi-to/alx-higher_level_programming": "web",
+  "Sufi-to/alx-system_engineering-devops": "web",
+  "Sufi-to/AirBnB_clone_v2": "web",
+  "Sufi-to/AirBnB_clone_v4": "web",
+  "Sufi-to/Enmar-": "web",
+  "Sufi-to/alx-backend-storage": "web",
+  "Sufi-to/alx-backend-python": "web",
+  "Sufi-to/alx-backend-user-data": "web",
+  "Sufi-to/alx-backend-javascript": "web",
+  "Sufi-to/alx-backend": "web",
+  "Sufi-to/alx-files_manager": "web",
+  "Sufi-to/alx-interview": "web",
+  "Sufi-to/Subscription_tracker_api": "web",
+  "Sufi-to/portfolio-web": "web",
+  "Sufi-to/prompt-engineering": "ai",
+  "Sufi-to/Object_detection_with_approximate_valuations": "ai",
+  "Sufi-to/Rule_based_credit_scoring_payslip": "ai",
+  "Sufi-to/FinRadar": "ai",
+  "Sufi-to/EndToEndRag": "ai",
+  "Sufi-to/research_match": "ai",
+  "Sufi-to/hn-hiring-observatory": "ai",
+};
+
+// Work kept under other accounts: team repositories Tomas committed to.
+const COLLABORATIONS = {
+  "NeftalemMG/TooB": "web",
+  "MIT-Emerging-Talent/ET6-CDSP-group-06-repo": "ai",
+};
+
+// Profile and repository repos that hold no project work.
+const SKIP = new Set(["Sufi-to/Sufi-to", "Sufi-to/Sufi-to_"]);
+
+const AI_WORDS = /databricks|rag|llm|ai|ml|data|match|research|radar|credit|detect|prompt|observ|vector|embed/i;
+const stratumFor = (repo) =>
+  STRATA[repo.full_name] ??
+  (repo.language === "C" ? "systems" : AI_WORDS.test(`${repo.name} ${repo.description ?? ""}`) ? "ai" : "web");
+
+// A token raises GitHub's rate limit; CI provides one, locally the gh CLI can.
+const token =
+  process.env.GITHUB_TOKEN ??
+  (() => {
+    try {
+      return execFileSync("gh", ["auth", "token"], { encoding: "utf8" }).trim();
+    } catch {
+      return "";
+    }
+  })();
+
+async function api(path) {
+  const res = await fetch(`https://api.github.com/${path}`, {
+    headers: { Accept: "application/vnd.github+json", "User-Agent": "refinery-ingest", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+  if (!res.ok) throw new Error(`${res.status} from ${path}`);
+  return res.json();
+}
+
+const user = await api("users/Sufi-to");
+const owned = (await api("users/Sufi-to/repos?per_page=100&type=owner")).filter((r) => !r.fork && !r.private && !SKIP.has(r.full_name));
+const REPOS = [...owned.map((r) => [r.full_name, stratumFor(r)]), ...Object.entries(COLLABORATIONS)];
+
+// Language totals over Tomas's own public repositories, in bytes of code.
+const languages = new Map();
+for (const r of owned) {
+  for (const [name, bytes] of Object.entries(await api(`repos/${r.full_name}/languages`))) languages.set(name, (languages.get(name) ?? 0) + bytes);
+}
+const languageBytes = [...languages.values()].reduce((a, b) => a + b, 0);
 
 const git = (args, cwd) =>
   execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
@@ -104,6 +146,16 @@ for (let y = y0, m = m0; y < y1 || (y === y1 && m <= m1); m === 12 ? (y++, (m = 
 
 const snapshot = {
   generatedAt: new Date().toISOString().slice(0, 10),
+  github: {
+    location: user.location,
+    affiliation: user.company,
+    hireable: user.hireable === true,
+    ownPublicRepos: owned.length,
+    languages: [...languages]
+      .sort((x, y) => y[1] - x[1])
+      .slice(0, 8)
+      .map(([name, bytes]) => ({ name, share: Math.round((bytes / languageBytes) * 1000) / 10 })),
+  },
   identities: IDENTITY.source,
   totalCommits: repos.reduce((s, r) => s + r.commits, 0),
   repos: repos.sort((a, b) => a.first.localeCompare(b.first)),

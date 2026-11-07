@@ -22,7 +22,8 @@ npm run build
 npm start            # serves out/ at http://localhost:3000
 ```
 
-Refresh the commit timeline from GitHub (clones metadata only, into `.cache/`):
+Refresh the GitHub data: commit timeline, language totals and profile facts.
+New public repositories are found automatically (clones metadata only, into `.cache/`):
 
 ```sh
 npm run ingest       # rewrites src/data/bronze.json
@@ -80,8 +81,9 @@ that, and in READ mode, the same panels stack. The ground is `OreField`, and the
 ## Open items
 
 - CV: set `profile.cvUrl` in `src/content/profile.ts` once the PDF is in `public/`.
-- Location, education and current role are not on the site yet.
-- Domain name and hosting are not chosen.
+- Education and current role are not on the site yet. Location, affiliation and
+  availability come from the GitHub profile through `npm run ingest`.
+- No custom domain yet; the site is on GitHub Pages.
 - Case-study pages show the same content as the expanded rows; long-form
   write-ups are the next iteration.
 - Light theme is not implemented; the site is dark only.

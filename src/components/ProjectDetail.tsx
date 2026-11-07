@@ -57,6 +57,11 @@ export function ProjectDetail({
                 {r.label} on GitHub
               </a>
             ))}
+            {p.live && (
+              <a href={p.live} target="_blank" rel="noopener" className="tap text-signal underline decoration-signal/40 underline-offset-4 hover:decoration-signal">
+                Live demo
+              </a>
+            )}
           </dd>
         </div>
         <div className="col-span-2 sm:col-span-4">

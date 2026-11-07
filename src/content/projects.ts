@@ -34,12 +34,117 @@ export const INJECTION_PATTERNS = [
   "you\\s+are\\s+now\\s+(DAN|jailbroken)",
 ] as const;
 
+const RM = "Sufi-to/research_match";
+const RM_SHA = "c103679d1b223d12a32fc67422bebe8f739c61c7";
 const ASSAY = "Sufi-to/Object_detection_with_approximate_valuations";
 const ASSAY_SHA = "6ec12e430529dc6e07b683eee9c3facb53800518";
 const PAY = "Sufi-to/Rule_based_credit_scoring_payslip";
 const PAY_SHA = "05871439687ebf1e8436a8e2ab51d6b2a16bd361";
 
 export const projects: Project[] = [
+  {
+    slug: "research-match",
+    name: "ResearchMatch",
+    shelf: "featured",
+    domains: ["data", "ai"],
+    status: "prototype",
+    year: 2026,
+    role: "Solo (36 of 36 commits)",
+    stack: ["Databricks", "Delta", "Unity Catalog", "AI Search", "Databricks SQL", "Streamlit", "OpenAlex", "ORCID", "Python"],
+    repos: [{ label: "research_match", url: gh(RM) }],
+    gold:
+      "Builds evidence-backed profiles of 36 Zayed University researchers from 2,097 eligible publications, and matches a research topic to collaborators, or says when the evidence is too thin.",
+    silver: {
+      problem:
+        "Finding a research collaborator usually runs on who you already know. The publication record exists, but it is spread across the university's repository, OpenAlex and ORCID, and one researcher can appear under several identities.",
+      build:
+        "A resumable collector saves raw JSON, XML and HTML from Zayed University's scholars repository, OpenAlex and ORCID. A notebook validates and loads them into eleven Bronze Delta tables. Silver links authors to researchers only through recorded identity decisions and groups versions of the same publication; Gold publishes profiles, evidence and a search source. Databricks AI Search indexes it, a matching policy checks every candidate against publication evidence, and a read-only Streamlit app on Databricks Apps serves matches, profiles and suggested teams.",
+      decisions: [
+        {
+          title: "Identity is a human decision",
+          body: "An author becomes a researcher only through an approved identity decision, reviewed in batches with the ORCID or affiliation evidence behind it.",
+        },
+        {
+          title: "No evidence, no match",
+          body: "If no candidate's titles and abstracts support the topic, the answer is insufficient evidence, not the nearest names.",
+        },
+        {
+          title: "Validate before writing",
+          body: "The loaders and builders default to validation only, and Gold is published from one frozen Silver build.",
+        },
+      ],
+      boundaries: [
+        "A pilot: 36 verified profiles across two colleges, from 50 candidates.",
+        "No accuracy claim yet: independent relevance labels are still outstanding.",
+        "Runs in a Databricks workspace; there is no public demo.",
+      ],
+    },
+    evidence: [
+      ev(RM, RM_SHA, "36 verified profiles and 2,097 eligible publications in Gold", "README.md", { line: 111, expect: "profiles and 2,097 eligible publications" }),
+      ev(RM, RM_SHA, "Eleven Bronze tables for the raw sources", "sql/01_create_bronze_tables.sql", { expect: "CREATE TABLE IF NOT EXISTS", count: { pattern: "CREATE TABLE IF NOT EXISTS", equals: 11 } }),
+      ev(RM, RM_SHA, "Identity decisions are recorded in their own Silver table", "sql/04_create_silver_tables.sql", { line: 23, expect: "CREATE TABLE IF NOT EXISTS identity_decisions" }),
+      ev(RM, RM_SHA, "Thin evidence returns insufficient_evidence, not candidates", "app/researchmatch/matching_policy.py", { line: 484, expect: '"insufficient_evidence"' }),
+      ev(RM, RM_SHA, "Suggested teams are built only from an existing match", "app/researchmatch/team.py", { line: 1, expect: "Evidence-coverage team suggestions built only from an existing match result" }),
+      ev(RM, RM_SHA, "266 test functions across the test suite", "tests", { expect: "def test_", count: { pattern: "def test_", equals: 266 } }),
+      ev(RM, RM_SHA, "No accuracy claim until relevance is labelled independently", "README.md", { line: 97, expect: "no accuracy claim is made" }),
+    ],
+    diagram: {
+      cols: 5,
+      rows: 2,
+      nodes: [
+        { id: "sources", label: "Sources", sub: "ZU, OpenAlex, ORCID", col: 0, row: 0, kind: "external" },
+        { id: "collect", label: "Collector", sub: "resumable, raw files", col: 1, row: 0 },
+        { id: "bronze", label: "Bronze", sub: "11 raw tables", col: 2, row: 0, kind: "store" },
+        { id: "silver", label: "Silver", sub: "identity decisions", col: 3, row: 0, kind: "guard" },
+        { id: "gold", label: "Gold", sub: "profiles, evidence", col: 4, row: 0, kind: "store" },
+        { id: "user", label: "Researcher", sub: "a topic", col: 0, row: 1, kind: "external" },
+        { id: "app", label: "Streamlit app", sub: "Databricks Apps", col: 1, row: 1 },
+        { id: "search", label: "AI Search", sub: "topic index", col: 2, row: 1, kind: "model" },
+        { id: "policy", label: "Evidence check", sub: "matching policy", col: 3, row: 1, kind: "guard" },
+        { id: "team", label: "Matches", sub: "and suggested teams", col: 4, row: 1 },
+      ],
+      edges: [
+        ["sources", "collect"],
+        ["collect", "bronze"],
+        ["bronze", "silver"],
+        ["silver", "gold"],
+        ["gold", "search"],
+        ["user", "app"],
+        ["app", "search"],
+        ["search", "policy"],
+        ["policy", "team"],
+      ],
+      scenarios: [
+        {
+          id: "build",
+          label: "Build profiles",
+          path: ["sources", "collect", "bronze", "silver", "gold"],
+          outcome: "Raw downloads become 36 verified profiles and 2,097 eligible publications, published from one frozen Silver build.",
+        },
+        {
+          id: "match",
+          label: "Match a topic",
+          path: ["user", "app", "search", "policy", "team"],
+          sample: "Who works on machine learning for healthcare?",
+          outcome: "Candidates come back with the publications that support them, plus suggested teams.",
+        },
+        {
+          id: "thin",
+          label: "Thin evidence",
+          path: ["user", "app", "search", "policy"],
+          stopsAt: "policy",
+          outcome: "When no candidate's publications support the topic, the answer is insufficient evidence.",
+        },
+        {
+          id: "identity",
+          label: "Unreviewed author",
+          path: ["sources", "collect", "bronze", "silver"],
+          stopsAt: "silver",
+          outcome: "An author with no approved identity decision never becomes a profile.",
+        },
+      ],
+    },
+  },
   {
     slug: "hn-hiring-observatory",
     name: "HN Hiring Observatory",
@@ -160,6 +265,7 @@ export const projects: Project[] = [
     role: "Team of two: backend, scoring and LLM integration",
     stack: ["FastAPI", "Next.js", "TypeScript", "Tailwind", "SQLite", "K2 Think V2", "SEC EDGAR", "pytest"],
     repos: [{ label: "FinRadar", url: gh(FIN) }],
+    live: "https://fin-radar-v0.vercel.app/",
     gold:
       "Builds a stock research report from prices, news and SEC filings, and deletes any model reasoning that cites a source it was never given.",
     silver: {
@@ -183,7 +289,7 @@ export const projects: Project[] = [
       ],
       boundaries: [
         "Research support and education only; it gives no investment advice.",
-        "Live mode needs provider API keys.",
+        "Live data needs provider API keys; without them it runs on labelled demo data.",
         "My teammate Neftalem led the v2 interface design.",
       ],
     },
@@ -551,6 +657,51 @@ export const projects: Project[] = [
     gold: "A file upload service with token auth, Redis sessions and a background worker that generates thumbnails.",
   },
 
+  {
+    slug: "alx-backend",
+    name: "Backend track (ALX)",
+    shelf: "archive",
+    domains: ["backend"],
+    status: "coursework",
+    year: 2024,
+    role: "Solo, ALX",
+    stack: ["Python", "MySQL", "Redis", "MongoDB", "Node.js", "TypeScript"],
+    repos: [
+      { label: "alx-backend-storage", url: gh("Sufi-to/alx-backend-storage") },
+      { label: "alx-backend-python", url: gh("Sufi-to/alx-backend-python") },
+      { label: "alx-backend-user-data", url: gh("Sufi-to/alx-backend-user-data") },
+      { label: "alx-backend", url: gh("Sufi-to/alx-backend") },
+      { label: "alx-backend-javascript", url: gh("Sufi-to/alx-backend-javascript") },
+    ],
+    gold: "Five repositories of backend fundamentals: advanced MySQL, NoSQL and Redis, async Python with unit and integration tests, session authentication, pagination, caching and a Redis queue in Node.",
+  },
+  {
+    slug: "airbnb-clone",
+    name: "AirBnB clone",
+    shelf: "archive",
+    domains: ["fullstack", "backend"],
+    status: "coursework",
+    year: 2024,
+    role: "Team project, ALX",
+    stack: ["Python", "Flask", "MySQL", "REST API", "JavaScript"],
+    repos: [
+      { label: "AirBnB_clone_v2", url: gh("Sufi-to/AirBnB_clone_v2") },
+      { label: "AirBnB_clone_v4", url: gh("Sufi-to/AirBnB_clone_v4") },
+    ],
+    gold: "A clone of AirBnB built in stages: a command console over a storage engine, then a Flask web app, a REST API and a dynamic front end.",
+  },
+  {
+    slug: "django-ecommerce",
+    name: "Django store",
+    shelf: "archive",
+    domains: ["fullstack"],
+    status: "archived",
+    year: 2023,
+    role: "Solo",
+    stack: ["Django", "Tailwind CSS"],
+    repos: [{ label: "django_ecommerce_project", url: gh("Sufi-to/django_ecommerce_project") }],
+    gold: "A basic store where users buy and sell products and can chat with sellers, styled with Tailwind CSS.",
+  },
   // Foundations: low-level work in C.
   {
     slug: "simple-shell",
@@ -571,7 +722,7 @@ export const projects: Project[] = [
     domains: ["systems"],
     status: "coursework",
     year: 2025,
-    role: "Solo",
+    role: "Solo, 42 Abu Dhabi",
     stack: ["C", "Make"],
     repos: [
       { label: "libft", url: gh("Sufi-to/libft") },
@@ -590,6 +741,18 @@ export const projects: Project[] = [
     stack: ["C"],
     repos: [{ label: "sorting_algorithms", url: gh("Sufi-to/sorting_algorithms") }],
     gold: "Bubble, insertion, selection, quick (Lomuto and Hoare), shell, cocktail, counting, merge, heap, radix and bitonic sorts, with Big O notes.",
+  },
+  {
+    slug: "interview-algorithms",
+    name: "Interview algorithms",
+    shelf: "foundations",
+    domains: ["systems"],
+    status: "coursework",
+    year: 2024,
+    role: "Solo, ALX",
+    stack: ["Python", "Algorithms"],
+    repos: [{ label: "alx-interview", url: gh("Sufi-to/alx-interview") }],
+    gold: "Ten interview problems solved in Python, including Pascal's triangle, lockboxes, UTF-8 validation, N-queens, matrix rotation and making change.",
   },
 ];
 
@@ -620,7 +783,7 @@ export const statusLabel: Record<Project["status"], string> = {
 };
 
 export const evidenceUrl = (e: Evidence) =>
-  `https://github.com/${e.repo}/${e.count ? "tree" : "blob"}/${e.sha}/${e.path}${e.line ? `#L${e.line}` : ""}`;
+  `https://github.com/${e.repo}/${e.count && !/\.\w+$/.test(e.path) ? "tree" : "blob"}/${e.sha}/${e.path}${e.line ? `#L${e.line}` : ""}`;
 
 /** Every checkable claim on the site, with the project it belongs to. */
 export const allEvidence = projects.flatMap((p) => (p.evidence ?? []).map((evidence) => ({ project: p, evidence })));

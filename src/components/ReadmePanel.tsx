@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { profile } from "@/content/profile";
 import { Panel } from "./Panel";
 
 const Heading = ({ children }: { children: string }) => <p className="text-[0.75rem] font-medium text-signal">## {children}</p>;
@@ -9,8 +10,13 @@ export function ReadmePanel() {
       <div className="space-y-1.5 p-3.5 font-[family-name:var(--font-code)] text-[0.75rem] leading-[1.65] text-quartz/90">
         <Heading>about</Heading>
         <p>
-          Software engineer, AI and data &rarr; extraction over 40,065 hiring posts &rarr; a research tool that drops unsourced claims &rarr; a
-          hardened LLM gateway.
+          Software engineer, AI and data &rarr; a researcher-matching pipeline for Zayed University &rarr; LLM extraction over 40,065 hiring
+          posts &rarr; a stock research tool that drops unsourced claims.
+        </p>
+        <Heading>status</Heading>
+        <p>
+          {profile.location}
+          {profile.available && <span className="text-signal"> &middot; open to work</span>}
         </p>
         <Heading>depth</Heading>
         <p>Gold is the outcome. Silver is the build. Bronze is the code that proves it.</p>

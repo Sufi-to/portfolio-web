@@ -3,14 +3,15 @@ import { PageIntro } from "@/components/PageIntro";
 import { Panel } from "@/components/Panel";
 import { CommitStrata } from "@/components/CommitStrata";
 import { profile } from "@/content/profile";
+import bronze from "@/data/bronze.json";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Software engineer working on AI and data systems, from C foundations to LLM pipelines.",
+  description: "Software engineer in Abu Dhabi working on AI and data systems, from C foundations to Databricks pipelines.",
 };
 
-// Only facts visible in Tomas's repositories are stated here. Education,
-// current role and location are waiting on Tomas (see README, "Open items").
+// Only facts visible on Tomas's GitHub are stated here, dated by when each
+// repository was active. Languages and counts come from scripts/ingest.mjs.
 const path = [
   {
     when: "2023",
@@ -20,19 +21,21 @@ const path = [
   {
     when: "2024",
     what: "Python, web and backend",
-    detail: "Flask and Django apps, an AirBnB clone with a REST API, Node services with Redis and MongoDB, and two deployed apps built with Neftalem Mussie.",
+    detail: "An AirBnB clone with a Flask app and REST API, a backend track in MySQL, Redis, authentication and Node, and Enmar and TooB, built with Neftalem Mussie.",
   },
   {
     when: "2025",
-    what: "Data science and computer vision",
-    detail: "MIT Emerging Talent collaborative data science project, and Assay: YOLOv8 and EXIF checks for credit signals.",
+    what: "Data, vision and C again",
+    detail: "MIT Emerging Talent data science project, libft and ft_printf at 42 Abu Dhabi, and Assay: YOLOv8 and EXIF checks for credit signals.",
   },
   {
     when: "2026",
     what: "AI and data engineering",
-    detail: "FinRadar, the Gatehouse LLM gateway, a Databricks bootcamp, and the HN Hiring Observatory pipeline.",
+    detail: "FinRadar, the Gatehouse LLM gateway, a Databricks bootcamp, ResearchMatch for Zayed University and the HN Hiring Observatory.",
   },
 ];
+
+const gh = bronze.github;
 
 export default function AboutPage() {
   return (
@@ -41,7 +44,7 @@ export default function AboutPage() {
       <div className="page-col page-side">
       <PageIntro name="bio_txt" title="About" lead="Raw evidence in, checkable claims out.">
         <p>
-          I&rsquo;m {profile.shortName}, a software engineer who builds AI and data systems. What I care about most is that a
+          I&rsquo;m {profile.shortName}, a software engineer in {profile.location} who builds AI and data systems. What I care about most is that a
           system can show its work: the query behind a chart, the source behind a claim, the reason a request was refused.
         </p>
       </PageIntro>
@@ -64,6 +67,47 @@ export default function AboutPage() {
         </ol>
         </Panel>
       </section>
+
+      <Panel name="github_data" meta={`ingested ${bronze.generatedAt}`} tag="DATA" portId="github" in="left" out="right">
+        <div className="grid gap-5 p-3.5 md:grid-cols-[minmax(0,1fr)_14rem]">
+          <div>
+            <h2 className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">Languages by code, across my own repositories</h2>
+            <ul className="mt-3 space-y-1.5">
+              {gh.languages.filter((l) => l.share >= 1).map((l) => (
+                <li key={l.name} className="grid grid-cols-[6rem_minmax(0,1fr)_3rem] items-center gap-3 t-data text-[0.75rem]">
+                  <span>{l.name}</span>
+                  <span aria-hidden className="h-1.5 bg-seam">
+                    <span className="block h-full bg-signal" style={{ width: `${l.share}%` }} />
+                  </span>
+                  <span className="text-right text-shale">{l.share}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <dl className="grid grid-cols-2 content-start gap-x-4 gap-y-3 t-data text-[0.75rem]">
+            <div>
+              <dt className="text-[0.625rem] text-shale">own public repos</dt>
+              <dd className="text-lg text-quartz">{gh.ownPublicRepos}</dd>
+            </div>
+            <div>
+              <dt className="text-[0.625rem] text-shale">commits</dt>
+              <dd className="text-lg text-quartz">{bronze.totalCommits.toLocaleString("en-US")}</dd>
+            </div>
+            <div>
+              <dt className="text-[0.625rem] text-shale">based in</dt>
+              <dd>{gh.location}</dd>
+            </div>
+            <div>
+              <dt className="text-[0.625rem] text-shale">status</dt>
+              <dd className={gh.hireable ? "text-signal" : ""}>{gh.hireable ? "open to work" : "not looking"}</dd>
+            </div>
+            <div className="col-span-2">
+              <dt className="text-[0.625rem] text-shale">affiliation on GitHub</dt>
+              <dd>{gh.affiliation}</dd>
+            </div>
+          </dl>
+        </div>
+      </Panel>
 
       <section aria-label="Commit history">
         <CommitStrata />

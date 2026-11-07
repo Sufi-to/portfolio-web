@@ -79,6 +79,8 @@ export interface Project {
   role: string;
   stack: string[];
   repos: { label: string; url: string }[];
+  /** A deployed version anyone can open, checked to load. */
+  live?: string;
   /** Gold: one sentence a recruiter can read in five seconds. */
   gold: string;
   /** Silver: the problem, the build, the decisions. */

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(new URL(siteUrl).origin),
   title: { default: `${profile.name}, AI and data engineering`, template: `%s | ${profile.name}` },
   description:
-    "Software engineer building AI and data systems that show their evidence: LLM extraction pipelines on Databricks, source-checked research tools and hardened LLM gateways.",
+    "Software engineer in Abu Dhabi building AI and data systems that show their evidence: a researcher-matching pipeline, LLM extraction on Databricks, source-checked research tools and a hardened LLM gateway.",
   authors: [{ name: profile.name, url: profile.github }],
   openGraph: {
     type: "website",

@@ -16,6 +16,7 @@ const CYCLE_MS = 7200;
 const VIEW_ROWS = Math.max(...featured.map((p) => p.diagram?.rows ?? 0));
 
 const ICONS: Record<string, React.ReactNode> = {
+  "research-match": <path d="M6 1a5 5 0 1 0 3 9l3.5 3.5 1-1L10 9a5 5 0 0 0-4-8zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" fillRule="evenodd" />,
   "hn-hiring-observatory": <path d="M2 11h3V7H2zM6 11h3V3H6zM10 11h2V5h-2z" />,
   finradar: <path d="M7 1a6 6 0 1 0 0 12A6 6 0 0 0 7 1zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" fillRule="evenodd" />,
   gatehouse: <path d="M2 12V5l5-3 5 3v7H9V8H5v4z" />,
