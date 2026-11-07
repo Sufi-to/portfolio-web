@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Diagram, DiagramNode, DiagramScenario } from "@/content/types";
+import { keepStill } from "@/lib/motion";
 
 const CELL_W = 184;
 const CELL_H = 116;
@@ -62,25 +63,35 @@ const KIND_LABEL: Record<NonNullable<DiagramNode["kind"]> | "service", string> =
 interface Props {
   diagram: Diagram;
   title: string;
+  /** Run the first scenario once the trace scrolls into view. */
+  autoplay?: boolean;
+  /** Sit inside a panel: no frame of its own, and a log that doesn't change height. */
+  bare?: boolean;
+  /** Draw at this many rows, so swapping diagrams doesn't move the page. */
+  fitRows?: number;
 }
 
 /**
  * An architecture diagram you can send a request through. Pick a scenario,
  * and a packet travels the real path while a log lists each hop.
  */
-export function SystemTrace({ diagram, title }: Props) {
+export function SystemTrace({ diagram, title, autoplay = false, bare = false, fitRows }: Props) {
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const nodes = useMemo(() => new Map(diagram.nodes.map((n) => [n.id, n])), [diagram]);
   const [scenario, setScenario] = useState<DiagramScenario>(diagram.scenarios[0]);
   const [hop, setHop] = useState(-1); // index into scenario.path reached so far; -1 = idle
   const [running, setRunning] = useState(false);
+  const [asked, setAsked] = useState(false); // Only a request the visitor sent is read out.
+  const root = useRef<HTMLDivElement>(null);
   const packet = useRef<SVGCircleElement>(null);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const raf = useRef<number | null>(null);
   const cancelled = useRef(false);
 
+  // Inside a panel the diagram is drawn smaller, so its text is set larger to stay readable.
+  const type = bare ? 1.25 : 1;
   const width = diagram.cols * CELL_W + PAD * 2;
-  const height = diagram.rows * CELL_H + PAD * 2 + 34;
+  const height = Math.max(diagram.rows, fitRows ?? 0) * CELL_H + PAD * 2 + 34;
 
   const stop = () => {
     cancelled.current = true;
@@ -93,8 +104,8 @@ export function SystemTrace({ diagram, title }: Props) {
       stop();
       cancelled.current = false;
       setScenario(s);
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduced) {
+      // Phones get the steps as a list rather than a diagram too small to read.
+      if (keepStill() || window.matchMedia("(max-width: 639px)").matches) {
         setHop(s.path.length - 1);
         setRunning(false);
         return;
@@ -147,6 +158,20 @@ export function SystemTrace({ diagram, title }: Props) {
     [nodes],
   );
 
+  useEffect(() => {
+    if (!autoplay || !root.current) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        play(diagram.scenarios[0]);
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(root.current);
+    return () => io.disconnect();
+  }, [autoplay, diagram, play]);
+
   const visited = new Set(hop >= 0 ? scenario.path.slice(0, hop + 1) : []);
   const activeEdges = new Set<string>();
   if (hop >= 0) for (let i = 0; i < Math.min(hop, scenario.path.length - 1); i++) activeEdges.add(`${scenario.path[i]}>${scenario.path[i + 1]}`);
@@ -154,18 +179,21 @@ export function SystemTrace({ diagram, title }: Props) {
   const rejected = finished && scenario.stopsAt;
 
   return (
-    <div className="rounded-lg border border-seam bg-slate">
-      <div className="flex flex-wrap items-center gap-2 border-b border-seam px-3 py-2.5 sm:px-4">
+    <div ref={root} className={bare ? "flex flex-1 flex-col" : "rounded-lg border border-seam bg-slate"}>
+      <div className={`flex flex-wrap items-center gap-2 border-b border-seam px-3 py-2.5 sm:px-4 ${bare ? "lg:min-h-[5.25rem]" : ""}`}>
         <span className="mr-1 t-micro text-shale">Send a request:</span>
         {diagram.scenarios.map((s) => {
           const on = s.id === scenario.id && hop >= 0;
           return (
             <button
               key={s.id}
-              onClick={() => play(s)}
+              onClick={() => {
+                setAsked(true);
+                play(s);
+              }}
               aria-pressed={on}
-              className={`rounded-full border px-3 py-1 t-micro transition-colors ${
-                on ? "border-trace/70 bg-trace/10 text-quartz" : "border-seam text-quartz/85 hover:border-shale/60"
+              className={`tap rounded-full border px-3 py-1 t-micro transition-colors ${
+                on ? "border-trace/70 bg-trace/10 text-quartz" : "border-edge text-quartz/85 hover:border-shale"
               }`}
             >
               {s.label}
@@ -174,7 +202,7 @@ export function SystemTrace({ diagram, title }: Props) {
         })}
       </div>
 
-      <div className="overflow-x-auto overscroll-x-contain">
+      <div className="hidden overflow-x-auto overscroll-x-contain sm:block">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           className="block h-auto w-full min-w-[640px]"
@@ -232,11 +260,11 @@ export function SystemTrace({ diagram, title }: Props) {
                   strokeDasharray={n.kind === "external" ? "4 3" : undefined}
                   style={{ transition: "fill 220ms, stroke 220ms" }}
                 />
-                <text x={b.cx} y={b.cy - 3} textAnchor="middle" fontSize="14" fontWeight={600} fill="var(--quartz)" style={{ fontStretch: "104%" }}>
+                <text x={b.cx} y={b.cy - 4} textAnchor="middle" fontSize={14 * type} fontWeight={600} fill="var(--quartz)" style={{ fontStretch: "104%" }}>
                   {n.label}
                 </text>
                 {n.sub && (
-                  <text x={b.cx} y={b.cy + 15} textAnchor="middle" fontSize="11.5" fill="var(--shale)">
+                  <text x={b.cx} y={b.cy + 16} textAnchor="middle" fontSize={11.5 * type} fill="var(--shale)">
                     {n.sub}
                   </text>
                 )}
@@ -248,7 +276,7 @@ export function SystemTrace({ diagram, title }: Props) {
           <circle ref={packet} r={5} fill="var(--trace)" opacity={0} style={{ filter: "drop-shadow(0 0 6px var(--trace))" }} />
 
           {/* Legend */}
-          <g transform={`translate(${PAD + 6}, ${height - 16})`} fontSize="11" fill="var(--shale)">
+          <g transform={`translate(${PAD + 6}, ${height - 16})`} fontSize={11 * type} fill="var(--shale)">
             {(["external", "guard", "model", "store"] as const).map((k, i) => (
               <g key={k} transform={`translate(${i * 150}, 0)`}>
                 <rect x={0} y={-9} width={14} height={10} rx={k === "store" ? 5 : 2} fill="none" stroke={kindStroke[k]} strokeDasharray={k === "external" ? "3 2" : undefined} />
@@ -260,7 +288,10 @@ export function SystemTrace({ diagram, title }: Props) {
       </div>
 
       {/* The log: a plain-text account of the same trace, readable without the picture. */}
-      <div className="border-t border-seam px-4 py-3 t-data text-shale" aria-live="polite">
+      <p className="sr-only" aria-live="polite">
+        {asked && finished ? scenario.outcome : ""}
+      </p>
+      <div className={`border-t border-seam px-4 py-3 t-data text-shale ${bare ? "min-h-[21rem] flex-1 sm:min-h-[15.5rem]" : ""}`}>
         {hop < 0 ? (
           <p>Choose a request above to trace it through the system.</p>
         ) : (
@@ -275,13 +306,13 @@ export function SystemTrace({ diagram, title }: Props) {
               const stopHere = rejected && scenario.stopsAt === id;
               return (
                 <li key={`${id}-${i}`} className={stopHere ? "text-reject" : ""}>
-                  <span className="text-shale/60">{String(i + 1).padStart(2, "0")}</span> {n.label}
-                  {n.sub ? <span className="text-shale/60">: {n.sub}</span> : null}
+                  <span className="text-shale/90">{String(i + 1).padStart(2, "0")}</span> {n.label}
+                  {n.sub ? <span className="text-shale/90">: {n.sub}</span> : null}
                   {stopHere ? " rejected" : ""}
                 </li>
               );
             })}
-            {finished && <li className={`pt-1 font-sans text-[0.9375rem] ${rejected ? "text-reject" : "text-quartz"}`}>{scenario.outcome}</li>}
+            {finished && <li className={`pt-1 font-sans text-small ${rejected ? "text-reject" : "text-quartz"}`}>{scenario.outcome}</li>}
           </ol>
         )}
       </div>

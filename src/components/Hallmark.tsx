@@ -20,7 +20,7 @@ export function Hallmark({ project: p, className = "" }: { project: Project; cla
   return (
     <ul aria-label="Project facts" className={`flex flex-wrap gap-1.5 ${className}`}>
       {marks.map((m) => (
-        <li key={m.text} title={m.title} className={`hallmark rounded-[3px] border px-1.5 py-[1px] t-micro ${m.tone}`}>
+        <li key={m.text} title={m.title} className={`hallmark rounded-sm border px-1.5 py-[1px] t-micro ${m.tone}`}>
           {m.text}
         </li>
       ))}

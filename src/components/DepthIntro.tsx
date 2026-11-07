@@ -1,6 +1,7 @@
 "use client";
 
 import { useDepth } from "./DepthProvider";
+import { Panel } from "./Panel";
 import { depthInfo } from "@/content/site";
 import { featured } from "@/content/projects";
 import type { Depth } from "@/content/types";
@@ -16,12 +17,14 @@ const proof = sample.evidence![0];
 export function DepthIntro() {
   const { depth, setDepth } = useDepth();
   return (
-    <section aria-labelledby="depth-title" className="mx-auto mt-24 max-w-[76rem] px-5 sm:px-8">
+    <section aria-labelledby="depth-title" className="mx-auto mt-16 max-w-[76rem] px-5 sm:px-8">
+      <Panel name="depth_select" meta="gold, silver, bronze" tag="SYS" portId="depth" in="left" out="right">
+      <div className="p-5 sm:p-6">
       <h2 id="depth-title" className="t-h2 max-w-2xl text-balance">
         Read every project at the depth you have time for.
       </h2>
       <p className="mt-3 text-quartz/80">Here is {sample.name} at all three. Pick one and the whole site follows.</p>
-      <div className="mt-8 grid gap-3 md:grid-cols-3">
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
         {ORDER.map((d) => {
           const on = d === depth;
           return (
@@ -30,7 +33,7 @@ export function DepthIntro() {
               onClick={() => setDepth(d)}
               aria-pressed={on}
               className={`group relative flex flex-col overflow-hidden rounded-lg border p-5 text-left transition-colors ${
-                on ? "border-shale/50 bg-slab" : "border-seam hover:border-shale/40"
+                on ? "border-shale/50 bg-slab-2" : "border-seam hover:border-shale/40"
               }`}
             >
               <span aria-hidden className={`absolute inset-x-0 top-0 h-[3px] ${BAR[d]} transition-opacity ${on ? "opacity-100" : "opacity-30 group-hover:opacity-60"}`} />
@@ -60,6 +63,8 @@ export function DepthIntro() {
           );
         })}
       </div>
+      </div>
+      </Panel>
     </section>
   );
 }

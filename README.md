@@ -32,9 +32,12 @@ npm run ingest       # rewrites src/data/bronze.json
 | Key | Action |
 | --- | --- |
 | Cmd/Ctrl + K | Command palette: pages, projects, detail level, copy email |
-| G / S / B | Gold, Silver or Bronze detail, anywhere on the site |
+| G / S / B | Gold, Silver or Bronze detail, on the pages where depth applies |
 | / | Focus the project filter (on /projects) |
 | Esc | Close the palette or clear the filter |
+
+Single-key shortcuts can be turned off from the palette. The Pause motion button
+stops the ground and cables, and the choice is remembered.
 
 ## How it's organised
 
@@ -63,9 +66,14 @@ generated automatically.
 ## Design tokens
 
 Slate-ore background, quartz text, Archivo (variable width axis) for
-everything readable, IBM Plex Mono only for data. Gold, silver and bronze mark
-the three detail levels and nothing else. Trace blue marks anything live or
-focused. Narrow type means raw; wide type means refined.
+everything readable, IBM Plex Mono only for data and panel labels. Gold, silver
+and bronze mark the three detail levels: `--metal` follows the current depth
+and recolours the ports, cables and dithered ground with it. Trace blue marks
+anything live or focused. Narrow type means raw; wide type means refined.
+
+The layout is a pipeline patch, in the spirit of node editors: content sits in
+titled operator panels (`Panel`), and on the home page cables (`PatchCables`)
+join their ports in the order the story runs. Cables are desktop only.
 
 ## Open items
 

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { projects, getProject, domainLabel } from "@/content/projects";
 import { ProjectDetail } from "@/components/ProjectDetail";
 import { Hallmark } from "@/components/Hallmark";
+import { Panel } from "@/components/Panel";
 
 export const dynamicParams = false;
 
@@ -35,9 +36,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         {p.domains.map((d) => domainLabel[d]).join(" and ")}
       </p>
       <Hallmark project={p} className="mt-4" />
-      <div className="mt-10">
-        <ProjectDetail project={p} depth="bronze" showGold />
-      </div>
+      <Panel name={`${p.slug.replaceAll("-", "_")}_detail`} meta="all three depths" tag="TXT" className="mt-10">
+        <div className="p-5 sm:p-6">
+          <ProjectDetail project={p} depth="bronze" showGold level={2} />
+        </div>
+      </Panel>
       {next && (
         <nav aria-label="Next project" className="mt-20 border-t border-seam pt-8">
           <Link href={`/projects/${next.slug}/`} className="group block">

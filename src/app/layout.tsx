@@ -5,6 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ConsoleRecord } from "@/components/ConsoleRecord";
+import { OreField } from "@/components/OreField";
+import { DepthToast } from "@/components/DepthToast";
+import { MotionToggle } from "@/components/MotionToggle";
 import { profile } from "@/content/profile";
 
 export const metadata: Metadata = {
@@ -20,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1a1e21",
+  themeColor: "#121518",
   colorScheme: "dark",
 };
 
@@ -29,11 +32,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-depth="gold">
       <body>
         <DepthProvider>
+          <OreField />
           <SiteHeader />
           <main id="main">{children}</main>
           <SiteFooter />
           <CommandPalette />
           <ConsoleRecord />
+          <DepthToast />
+          <MotionToggle />
         </DepthProvider>
       </body>
     </html>

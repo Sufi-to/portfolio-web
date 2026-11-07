@@ -2,37 +2,35 @@ import Link from "next/link";
 import { profile } from "@/content/profile";
 import bronze from "@/data/bronze.json";
 
+const link = "tap underline decoration-seam underline-offset-4 hover:decoration-trace";
+
 export function SiteFooter() {
   return (
-    <footer className="mt-32 border-t border-seam">
-      <div className="mx-auto grid max-w-[76rem] gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1fr_auto]">
-        <div>
-          <p className="t-h3">{profile.name}</p>
-          <p className="mt-2 max-w-md t-small text-shale">
-            Every project claim on this site links to the file and commit that backs it. Git history last ingested{" "}
-            {new Date(bronze.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.
-          </p>
-        </div>
-        <ul className="flex flex-wrap items-start gap-x-6 gap-y-2 t-small">
+    <footer className="relative mt-24 border-t border-seam bg-slate">
+      <div className="mx-auto flex max-w-[76rem] flex-wrap items-center justify-between gap-x-8 gap-y-3 px-5 py-5 t-data text-shale sm:px-8">
+        <p>
+          {bronze.generatedAt.slice(0, 4)} {profile.name}. Every claim links to the code behind it. Git history ingested {bronze.generatedAt}.
+        </p>
+        <ul className="flex flex-wrap items-center gap-x-5">
           <li>
-            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={`mailto:${profile.email}`}>
-              {profile.email}
+            <a className={link} href={`mailto:${profile.email}`}>
+              email
             </a>
           </li>
           <li>
-            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.github} rel="me noopener" target="_blank">
-              GitHub
+            <a className={link} href={profile.github} rel="me noopener" target="_blank">
+              github
             </a>
           </li>
           <li>
-            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.linkedin} rel="me noopener" target="_blank">
-              LinkedIn
+            <a className={link} href={profile.linkedin} rel="me noopener" target="_blank">
+              linkedin
             </a>
           </li>
           {profile.cvUrl && (
             <li>
-              <Link className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.cvUrl}>
-                CV
+              <Link className={link} href={profile.cvUrl}>
+                cv
               </Link>
             </li>
           )}

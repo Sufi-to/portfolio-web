@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { projects, shelfLabel, domainLabel, statusLabel } from "@/content/projects";
 import type { Domain, Project, Shelf, Status } from "@/content/types";
 import { parseQuery, matches, toggleToken, hasToken, toSql } from "@/lib/query";
-import { useDepth, isTyping } from "./DepthProvider";
+import { useDepth, isTyping, shortcutsOn } from "./DepthProvider";
+import { Panel } from "./Panel";
 import { ProjectDetail } from "./ProjectDetail";
 
 const SHELVES: Shelf[] = ["featured", "lab", "archive", "foundations"];
@@ -47,7 +48,7 @@ export function ProjectExplorer() {
   // "/" focuses the query bar.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "/" && !isTyping(e.target)) {
+      if (e.key === "/" && !isTyping(e.target) && shortcutsOn()) {
         e.preventDefault();
         input.current?.focus();
       }
@@ -76,7 +77,7 @@ export function ProjectExplorer() {
         onClick={() => setQ((cur) => toggleToken(cur, key, value))}
         aria-pressed={on}
         className={`tap rounded-full border px-3 py-1.5 t-micro transition-colors ${
-          on ? "border-trace/70 bg-trace/10 text-quartz" : "border-seam text-quartz/80 hover:border-shale/60"
+          on ? "border-trace/70 bg-trace/10 text-quartz" : "border-edge text-quartz/80 hover:border-shale"
         }`}
       >
         {label}
@@ -87,7 +88,7 @@ export function ProjectExplorer() {
   return (
     <div>
       {/* Query bar */}
-      <div className="rounded-lg border border-seam bg-slab/70 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-trace">
+      <Panel name="catalog_query" meta={`${results.length} of ${projects.length} rows`} tag="SYS" className="border-edge focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-trace">
         <label className="flex items-center gap-3 px-4">
           <span aria-hidden className="t-data text-trace">›</span>
           <span className="sr-only">Filter projects</span>
@@ -97,7 +98,7 @@ export function ProjectExplorer() {
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === "Escape" && setQ("")}
             placeholder="Try domain:ai status:shipped"
-            className="w-full bg-transparent py-3.5 t-data text-[0.9375rem] text-quartz placeholder:text-shale/70 focus-visible:outline-transparent"
+            className="w-full bg-transparent py-3.5 t-data text-small text-quartz placeholder:text-shale focus-visible:outline-transparent"
             spellCheck={false}
             autoComplete="off"
           />
@@ -106,10 +107,10 @@ export function ProjectExplorer() {
               Clear
             </button>
           ) : (
-            <kbd className="hidden shrink-0 rounded border border-seam px-1.5 t-data text-shale sm:block">/</kbd>
+            <kbd className="hidden shrink-0 rounded-sm border border-seam px-1.5 t-data text-shale sm:block">/</kbd>
           )}
         </label>
-      </div>
+      </Panel>
 
       <div className="mt-4 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
@@ -144,7 +145,7 @@ export function ProjectExplorer() {
           <p className="mt-2 t-small text-shale">Try one of these:</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {EXAMPLES.map((ex) => (
-              <button key={ex} onClick={() => setQ(ex)} className="rounded border border-seam px-2 py-1 t-data text-quartz hover:border-trace/60">
+              <button key={ex} onClick={() => setQ(ex)} className="rounded-sm border border-seam px-2 py-1 t-data text-quartz hover:border-trace/60">
                 {ex}
               </button>
             ))}
@@ -158,11 +159,13 @@ export function ProjectExplorer() {
             <span className="t-h2">{shelfLabel[g.shelf]}</span>
             <span className="t-data text-shale">{g.items.length}</span>
           </h2>
-          <ul className="mt-4 border-t border-seam">
-            {g.items.map((p) => (
-              <Row key={p.slug} p={p} open={open.has(p.slug)} onToggle={() => toggle(p.slug)} depth={depth} />
-            ))}
-          </ul>
+          <Panel name={`${g.shelf}_shelf`} meta={`${g.items.length} rows`} tag="DATA" className="mt-4">
+            <ul>
+              {g.items.map((p) => (
+                <Row key={p.slug} p={p} open={open.has(p.slug)} onToggle={() => toggle(p.slug)} depth={depth} />
+              ))}
+            </ul>
+          </Panel>
         </section>
       ))}
     </div>
@@ -176,12 +179,12 @@ function Row({ p, open, onToggle, depth }: { p: Project; open: boolean; onToggle
     if (open) setMounted(true);
   }, [open]);
   return (
-    <li id={p.slug} className="scroll-mt-24 border-b border-seam">
+    <li id={p.slug} className="scroll-mt-24 border-b border-seam/70 last:border-b-0">
       <button
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={`panel-${p.slug}`}
-        className="group grid w-full grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 py-5 text-left md:grid-cols-[minmax(12rem,16rem)_1fr_auto]"
+        className="group grid w-full grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 px-4 py-5 text-left md:grid-cols-[minmax(12rem,16rem)_1fr_auto]"
       >
         <span className="flex items-baseline gap-3">
           <span
@@ -202,7 +205,7 @@ function Row({ p, open, onToggle, depth }: { p: Project; open: boolean; onToggle
       <div id={`panel-${p.slug}`} className="reveal" data-open={open} role="region" aria-label={`${p.name} details`}>
         <div>
           {mounted && (
-            <div className="pb-10 pl-5 pt-1" inert={!open}>
+            <div className="px-4 pb-8 pt-1 sm:pl-9" inert={!open}>
               <p className="mb-6 t-micro text-shale">
                 Showing {depth} detail.{" "}
                 <span className="hidden md:inline">Press G, S or B to change it.</span>

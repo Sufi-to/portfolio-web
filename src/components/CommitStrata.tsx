@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import bronze from "@/data/bronze.json";
+import { Panel } from "./Panel";
 
 type Month = (typeof bronze.months)[number];
 const STRATA = [
@@ -44,7 +45,8 @@ export function CommitStrata() {
   const m = months[shown];
 
   return (
-    <figure>
+    <Panel name="commit_strata" meta={`ingested ${bronze.generatedAt}`} tag="DATA" portId="strata" in="right" out="left">
+    <figure className="p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
         <figcaption className="max-w-2xl">
           <span className="t-h2">{bronze.totalCommits.toLocaleString("en-US")} commits, from a C shell to LLM pipelines</span>
@@ -118,5 +120,6 @@ export function CommitStrata() {
         {total(m) > 0 && <span className="text-quartz/80"> in {m.repos.join(", ")}</span>}
       </p>
     </figure>
+    </Panel>
   );
 }

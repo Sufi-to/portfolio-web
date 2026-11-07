@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Depth, Project } from "@/content/types";
 import { evidenceUrl, statusLabel } from "@/content/projects";
 import { useDepth } from "./DepthProvider";
+import { Panel } from "./Panel";
 import { SystemTrace } from "./SystemTrace";
 
 const order: Depth[] = ["gold", "silver", "bronze"];
@@ -13,14 +14,28 @@ const order: Depth[] = ["gold", "silver", "bronze"];
  * links. Silver adds the build story and the runnable diagram. Bronze adds
  * file-and-line evidence. `depth` overrides the visitor's setting.
  */
-export function ProjectDetail({ project: p, depth: forced, showGold = false }: { project: Project; depth?: Depth; showGold?: boolean }) {
+export function ProjectDetail({
+  project: p,
+  depth: forced,
+  showGold = false,
+  hideTrace = false,
+  level = 3,
+}: {
+  project: Project;
+  depth?: Depth;
+  showGold?: boolean;
+  hideTrace?: boolean;
+  /** Heading level for this block's sections, so the page outline never skips one. */
+  level?: 2 | 3 | 4;
+}) {
+  const H = `h${level}` as const;
   const { depth: chosen } = useDepth();
   const depth = forced ?? chosen;
   const at = (d: Depth) => order.indexOf(depth) >= order.indexOf(d);
 
   return (
     <div className="space-y-8">
-      {showGold && <p className="measure text-[1.1875rem] leading-[1.6]">{p.gold}</p>}
+      {showGold && <p className="measure text-lead leading-[1.6]">{p.gold}</p>}
 
       <dl className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
         <div>
@@ -47,7 +62,7 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
           <dt className="t-micro text-shale">Stack</dt>
           <dd className="mt-1 flex flex-wrap gap-1.5">
             {p.stack.map((s) => (
-              <span key={s} className="rounded border border-seam px-1.5 py-0.5 t-micro text-quartz/85">
+              <span key={s} className="rounded-sm border border-seam px-1.5 py-0.5 t-micro text-quartz/85">
                 {s}
               </span>
             ))}
@@ -59,19 +74,19 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
         <div className="space-y-8">
           <div className="grid gap-8 md:grid-cols-2">
             <div>
-              <h4 className="t-micro text-silver">The problem</h4>
+              <H className="t-micro text-silver">The problem</H>
               <p className="mt-2 text-quartz/90">{p.silver.problem}</p>
             </div>
             <div>
-              <h4 className="t-micro text-silver">What I built</h4>
+              <H className="t-micro text-silver">What I built</H>
               <p className="mt-2 text-quartz/90">{p.silver.build}</p>
             </div>
           </div>
 
-          {p.diagram && <SystemTrace diagram={p.diagram} title={p.name} />}
+          {p.diagram && !hideTrace && <SystemTrace diagram={p.diagram} title={p.name} />}
 
           <div>
-            <h4 className="t-micro text-silver">Decisions</h4>
+            <H className="t-micro text-silver">Decisions</H>
             <ul className="mt-3 grid gap-x-8 gap-y-5 md:grid-cols-3">
               {p.silver.decisions.map((d) => (
                 <li key={d.title} className="border-l border-silver/40 pl-4">
@@ -83,7 +98,7 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
           </div>
 
           <div>
-            <h4 className="t-micro text-silver">What it doesn&rsquo;t do</h4>
+            <H className="t-micro text-silver">What it doesn&rsquo;t do</H>
             <ul className="mt-2 space-y-1 t-small text-quartz/80">
               {p.silver.boundaries.map((b) => (
                 <li key={b} className="flex gap-2">
@@ -102,15 +117,15 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
 
       {at("bronze") && p.evidence && (
         <div>
-          <h4 className="t-micro text-bronze">Evidence, pinned to a commit</h4>
-          <ul className="mt-3 divide-y divide-seam/70 rounded-lg border border-seam">
+          <Panel name="evidence" meta="pinned to a commit" tag="DATA">
+          <ul className="divide-y divide-seam/70">
             {p.evidence.map((e) => (
               <li key={`${e.path}${e.line ?? ""}`}>
                 <a
                   href={evidenceUrl(e)}
                   target="_blank"
                   rel="noopener"
-                  className="group grid gap-1 px-4 py-3 transition-colors hover:bg-slab sm:grid-cols-[1fr_auto] sm:gap-6"
+                  className="group grid gap-1 px-4 py-3 transition-colors hover:bg-slab-2 sm:grid-cols-[1fr_auto] sm:gap-6"
                 >
                   <span className="t-small">{e.claim}</span>
                   <span className="t-data text-shale group-hover:text-bronze">
@@ -121,6 +136,7 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
               </li>
             ))}
           </ul>
+          </Panel>
         </div>
       )}
       {at("bronze") && !p.evidence && (

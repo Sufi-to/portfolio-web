@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
+import { Panel } from "@/components/Panel";
 import { CommitStrata } from "@/components/CommitStrata";
 import { profile } from "@/content/profile";
 
@@ -47,15 +48,17 @@ export default function AboutPage() {
         <h2 id="path-title" className="t-h2">
           How I got here
         </h2>
-        <ol className="mt-6 border-t border-seam">
-          {path.map((p) => (
-            <li key={p.when} className="grid gap-2 border-b border-seam py-5 md:grid-cols-[6rem_16rem_1fr] md:gap-8">
+        <Panel name="career_log" meta="2023 to 2026" tag="DATA" className="mt-6">
+        <ol>
+          {path.map((p, i) => (
+            <li key={p.when} className={`grid gap-2 p-5 md:grid-cols-[6rem_16rem_1fr] md:gap-8 ${i > 0 ? "border-t border-seam/70" : ""}`}>
               <span className="t-data text-shale">{p.when}</span>
               <span className="t-h3">{p.what}</span>
               <span className="text-quartz/85">{p.detail}</span>
             </li>
           ))}
         </ol>
+        </Panel>
       </section>
 
       <section aria-label="Commit history" className="mx-auto mt-24 max-w-[76rem] px-5 sm:px-8">

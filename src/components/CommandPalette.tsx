@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { nav, depthInfo } from "@/content/site";
 import { projects } from "@/content/projects";
 import { profile } from "@/content/profile";
-import { useDepth } from "./DepthProvider";
+import { toggleShortcuts, useDepth } from "./DepthProvider";
 import type { Depth } from "@/content/types";
 
 interface Command {
@@ -49,6 +49,8 @@ export function CommandPalette() {
   }, []);
 
   useEffect(() => {
+    // The page behind stays out of reach while the palette is open.
+    document.querySelectorAll<HTMLElement>("header, main, footer").forEach((el) => (el.inert = open));
     if (open) {
       restoreFocus.current = document.activeElement as HTMLElement;
       setText("");
@@ -92,6 +94,17 @@ export function CommandPalette() {
           close();
         },
       })),
+      {
+        id: "shortcuts",
+        group: "Detail level",
+        label: "Turn single-key shortcuts on or off",
+        hint: "G, S, B and /",
+        keywords: "keyboard accessibility",
+        run: () => {
+          flash(toggleShortcuts() ? "Single-key shortcuts on" : "Single-key shortcuts off");
+          close();
+        },
+      },
       {
         id: "copy-email",
         group: "Contact",
@@ -161,6 +174,9 @@ export function CommandPalette() {
     if (e.key === "Escape") {
       e.preventDefault();
       close();
+    } else if (e.key === "Tab") {
+      // The input is the only stop in here, so Tab stays on it.
+      e.preventDefault();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setActive((a) => Math.min(a + 1, results.length - 1));
@@ -190,7 +206,7 @@ export function CommandPalette() {
             role="dialog"
             aria-modal="true"
             aria-label="Command palette"
-            className="w-full max-w-xl overflow-hidden rounded-xl border border-seam bg-slab shadow-[0_24px_80px_-24px_rgba(0,0,0,0.7)]"
+            className="w-full max-w-xl overflow-hidden rounded-lg border border-seam bg-slab shadow-[0_24px_80px_-24px_rgba(0,0,0,0.7)]"
             onKeyDown={onKeyDown}
           >
             <div className="flex items-center gap-3 border-b border-seam px-4 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-trace">
@@ -205,9 +221,9 @@ export function CommandPalette() {
                 aria-activedescendant={results[active] ? `cmd-${results[active].id}` : undefined}
                 role="combobox"
                 aria-expanded="true"
-                className="h-13 w-full bg-transparent py-4 text-quartz placeholder:text-shale/70 focus-visible:outline-transparent"
+                className="h-13 w-full bg-transparent py-4 text-quartz placeholder:text-shale focus-visible:outline-transparent"
               />
-              <kbd className="t-data rounded border border-seam px-1.5 text-shale">esc</kbd>
+              <kbd className="t-data rounded-sm border border-seam px-1.5 text-shale">esc</kbd>
             </div>
             <ul id="cmd-list" role="listbox" className="max-h-[52vh] overflow-y-auto py-2">
               {results.length === 0 && <li className="px-4 py-6 text-shale t-small">No matches. Try a project name or a technology.</li>}

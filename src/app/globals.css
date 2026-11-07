@@ -9,10 +9,11 @@
   and are used for nothing else. Trace blue marks anything live or focused.
 */
 :root {
-  --slate: #1a1e21;
-  --slab: #22272b;
-  --slab-2: #2a3035;
-  --seam: #353c42;
+  --slate: #121518;
+  --slab: #191d20;
+  --slab-2: #24292d;
+  --seam: #2f353a;
+  --edge: #6b767d; /* Borders that identify a control: 3:1 against the panels. */
   --quartz: #e6eae8;
   --shale: #a4aeb3;
   --gold: #d9b65b;
@@ -20,8 +21,8 @@
   --bronze: #c08a63;
   --trace: #7cc2e3;
   --reject: #e07a7a;
-  --stratum-systems: #4b565e;
-  --stratum-web: #7f8d95;
+  --stratum-systems: #6a757d;
+  --stratum-web: #9aa7af;
   --stratum-ai: #dde3e0;
   --metal: var(--gold);
   color-scheme: dark;
@@ -35,6 +36,7 @@
   --color-slab: var(--slab);
   --color-slab-2: var(--slab-2);
   --color-seam: var(--seam);
+  --color-edge: var(--edge);
   --color-quartz: var(--quartz);
   --color-shale: var(--shale);
   --color-gold: var(--gold);
@@ -45,12 +47,21 @@
   --color-metal: var(--metal);
   --font-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --text-label: 0.75rem;
+  --text-small: 0.9375rem;
+  --text-lead: 1.1875rem;
+  --text-title: 1.3125rem;
+  --text-name: 1.625rem;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
 }
 
 /* Unlayered rules would beat Tailwind utilities, so everything sits in layers. */
 @layer base {
 html {
-  background: var(--slate);
+  /* Node-editor dot grid; OreField's dither sits on top of it when scripts run. */
+  background: var(--slate) radial-gradient(circle, color-mix(in srgb, var(--shale) 16%, transparent) 1px, transparent 1.5px) 0 0 / 24px 24px fixed;
   color: var(--quartz);
   font-family: var(--font-sans);
   font-size: 100%;
@@ -83,13 +94,13 @@ a { color: inherit; }
 }
 
 @layer components {
-/* Type scale: 13 / 15 / 17 / 21 / 26 / 36 / 56 / 76. */
+/* Type scale: 13 / 15 / 17 / 21 / 26 / 36 / 56 / 59. */
 .t-display {
-  font-size: clamp(2.5rem, 6.4vw, 4.75rem);
-  line-height: 0.98;
+  font-size: clamp(2.25rem, 4.1vw, 3.7rem);
+  line-height: 1;
   letter-spacing: -0.02em;
-  font-weight: 560;
-  font-stretch: 116%;
+  font-weight: 800;
+  font-stretch: 112%;
 }
 .t-h1, .t-h2 { text-wrap: balance; }
 .t-h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.02; font-weight: 560; font-stretch: 112%; letter-spacing: -0.015em; }
@@ -120,8 +131,6 @@ a { color: inherit; }
 .reveal[data-open="true"] { grid-template-rows: 1fr; }
 .reveal > * { overflow: hidden; min-height: 0; }
 
-.hairline { border-color: var(--seam); }
-
 /* Hallmarks read as struck into the surface, not printed on it. */
 .hallmark {
   background: color-mix(in srgb, var(--slate) 70%, black);
@@ -133,17 +142,90 @@ a { color: inherit; }
   .tap { display: inline-flex; align-items: center; min-height: 2.75rem; }
 }
 
-/* Core samples: the first scenario's route draws itself on hover. */
-.core-trace {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 900ms cubic-bezier(0.4, 0, 0.2, 1);
+/* Operator panels: a titled box on the patch. Panels sit above the cables. */
+.panel {
+  position: relative;
+  z-index: 1;
+  background: var(--slab);
+  border: 1px solid var(--seam);
+  border-radius: var(--radius-lg);
 }
-.core rect { transition: stroke 300ms, stroke-opacity 300ms; }
-.group:hover .core-trace,
-.group:focus-within .core-trace { stroke-dashoffset: 0; }
-.group:hover .core-on,
-.group:focus-within .core-on { stroke: var(--trace); stroke-opacity: 1; }
+.panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.125rem;
+  padding: 0.25rem 0.75rem;
+  border-bottom: 1px solid var(--seam);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--shale);
+}
+.panel-tag {
+  flex: none;
+  padding: 0 0.375rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: var(--metal);
+  background: color-mix(in srgb, var(--metal) 12%, transparent);
+  transition: color 300ms, background-color 300ms;
+}
+
+/* Ports only make sense with cables, so they share the cables' breakpoint. */
+.port {
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 1.5px solid var(--metal);
+  border-radius: 999px;
+  background: var(--slate);
+  transition: border-color 300ms;
+}
+.port[data-side="left"] { left: -0.375rem; }
+.port[data-side="right"] { right: -0.375rem; }
+@media (min-width: 1024px) {
+  .port { display: block; }
+}
+
+/* A highlight runs the length of each cable, in step with the metal. */
+.cable-run {
+  stroke-dasharray: 0.05 0.95;
+  animation: cable-run 7s linear infinite;
+}
+@keyframes cable-run {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Outlined headline. The fill paints over the stroke so overlapping variable-font contours stay hidden. */
+.hero-line {
+  display: block;
+  -webkit-text-stroke: 1.25px var(--quartz);
+  paint-order: stroke fill;
+}
+@media (min-width: 1024px) {
+  .hero-line { -webkit-text-stroke-width: 2px; }
+}
+.hero-raw { color: var(--slab); }
+.hero-fill { transition: color 1800ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.2em;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: caret 1.1s steps(1) infinite;
+}
+@keyframes caret {
+  50% { opacity: 0; }
+}
 
 }
 
@@ -154,4 +236,9 @@ a { color: inherit; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .cable-run { display: none; }
 }
+
+/* The Pause motion button: everything that runs for more than a few seconds stops. */
+html[data-motion="off"] .cable-run { display: none; }
+html[data-motion="off"] .caret { animation: none; }

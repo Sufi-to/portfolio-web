@@ -12,7 +12,7 @@ export default function NotFound() {
 
   return (
     <div className="mx-auto max-w-[76rem] px-5 py-20 sm:px-8">
-      <pre className="overflow-x-auto rounded-lg border border-seam bg-slab/60 p-5 t-data text-[0.9375rem] text-quartz/85">
+      <pre className="overflow-x-auto rounded-lg border border-seam bg-slab/60 p-5 t-data text-small text-quartz/85">
         <span className="text-trace">› </span>
         {sql}
         {"\n\n"}

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { profile } from "@/content/profile";
+import { button } from "@/lib/button";
+import { Panel } from "./Panel";
 
 /** The home page's last word: the address itself, large, so nobody has to hunt for it. */
 export function CloseContact() {
@@ -18,7 +20,9 @@ export function CloseContact() {
   };
 
   return (
-    <section aria-labelledby="close-title" className="mx-auto mt-28 max-w-[76rem] px-5 sm:px-8">
+    <section aria-labelledby="close-title" className="mx-auto mt-16 max-w-[76rem] px-5 sm:px-8">
+      <Panel name="contact_out" meta="say hi" tag="TXT" portId="contact" in="left">
+      <div className="p-5 sm:p-6">
       <h2 id="close-title" className="t-h2">
         Building something with data or LLMs? Tell me about it.
       </h2>
@@ -30,10 +34,12 @@ export function CloseContact() {
       </a>
       <button
         onClick={copy}
-        className="tap mt-5 rounded-md border border-seam px-3 py-1.5 t-small transition-colors hover:border-shale/60"
+        className={`mt-5 ${button("outline", "sm")}`}
       >
         <span aria-live="polite">{copied ? "Email address copied" : "Copy email address"}</span>
       </button>
+      </div>
+      </Panel>
     </section>
   );
 }
