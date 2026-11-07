@@ -27,10 +27,12 @@ export function ProjectDetail({ project: p, depth: forced, showGold = false }: {
           <dt className="t-micro text-shale">Role</dt>
           <dd className="t-small">{p.role}</dd>
         </div>
-        <div>
-          <dt className="t-micro text-shale">Status</dt>
-          <dd className="t-small">{statusLabel[p.status]}</dd>
-        </div>
+        {!showGold && (
+          <div>
+            <dt className="t-micro text-shale">Status</dt>
+            <dd className="t-small">{statusLabel[p.status]}</dd>
+          </div>
+        )}
         <div className="col-span-2">
           <dt className="t-micro text-shale">Source</dt>
           <dd className="flex flex-wrap gap-x-4 t-small">

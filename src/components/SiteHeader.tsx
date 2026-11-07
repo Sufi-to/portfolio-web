@@ -28,15 +28,15 @@ export function SiteHeader() {
       >
         Skip to content
       </a>
-      <div className="mx-auto flex h-16 max-w-[76rem] items-center gap-4 px-5 sm:px-8">
-        <Link href="/" className="mr-auto shrink-0 leading-none" aria-label={`${profile.name}, home`}>
+      <div className="mx-auto flex h-16 max-w-[76rem] items-center gap-2 px-5 sm:gap-4 sm:px-8">
+        <Link href="/" className="tap mr-auto shrink-0 leading-none" aria-label={`${profile.name}, home`}>
           <span className="block text-[1.0625rem] font-[620] [font-stretch:118%] tracking-[-0.01em]">
-            <span className="hidden sm:inline">{profile.name}</span>
-            <span className="sm:hidden">Tomas T.</span>
+            <span className="hidden md:inline">{profile.name}</span>
+            <span className="md:hidden">{profile.shortName}</span>
           </span>
         </Link>
 
-        <nav aria-label="Main" className="hidden md:block">
+        <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {nav.slice(1).map((n) => {
               const on = isActive(path, n.href);
@@ -68,7 +68,7 @@ export function SiteHeader() {
         </button>
 
         <button
-          className="rounded-md border border-seam px-3 py-1.5 t-small md:hidden"
+          className="tap rounded-md border border-seam px-2.5 py-1.5 t-small lg:hidden"
           aria-expanded={menu}
           aria-controls="mobile-nav"
           onClick={() => setMenu((m) => !m)}
@@ -77,15 +77,14 @@ export function SiteHeader() {
         </button>
       </div>
 
-      <div id="mobile-nav" className="reveal md:hidden" data-open={menu}>
-        <div>
+      <div id="mobile-nav" className="reveal lg:hidden" data-open={menu}>
+        <div inert={!menu}>
           <nav aria-label="Main, mobile" className="border-t border-seam px-5 pb-5 pt-2">
             <ul className="flex flex-col">
               {nav.map((n) => (
                 <li key={n.href}>
                   <Link
                     href={n.href}
-                    tabIndex={menu ? 0 : -1}
                     aria-current={isActive(path, n.href) ? "page" : undefined}
                     className="flex items-center justify-between border-b border-seam/60 py-3.5 text-[1.3125rem] [font-stretch:110%]"
                   >
@@ -96,7 +95,6 @@ export function SiteHeader() {
               ))}
             </ul>
             <button
-              tabIndex={menu ? 0 : -1}
               onClick={openPalette}
               className="mt-4 w-full rounded-md border border-seam py-3 t-small text-shale"
             >

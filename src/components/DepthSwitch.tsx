@@ -46,7 +46,7 @@ export function DepthSwitch({ compact = false }: { compact?: boolean }) {
             title={`${info.label}: ${info.hint} (${info.key})`}
             onClick={() => setDepth(d)}
             onKeyDown={(e) => onKeyDown(e, i)}
-            className={`group relative flex items-center gap-1.5 rounded-full px-2.5 py-1 t-micro transition-colors duration-200 ${
+            className={`tap group relative flex items-center gap-1.5 rounded-full px-2 py-1 t-micro sm:px-2.5 transition-colors duration-200 ${
               on ? "bg-slab-2 text-quartz" : "text-shale hover:text-quartz"
             }`}
           >

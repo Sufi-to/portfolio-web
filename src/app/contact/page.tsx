@@ -30,7 +30,6 @@ export default function ContactPage() {
             </a>
           </li>
         ))}
-        {!profile.cvUrl && <li className="py-6 t-small text-shale">A downloadable CV will be added here soon.</li>}
       </ul>
     </>
   );

@@ -133,10 +133,14 @@ export function ExtractionHero() {
   const done = step >= spanCount;
 
   return (
-    <section aria-labelledby="hero-title" className="mx-auto max-w-[76rem] px-5 pt-14 sm:px-8 sm:pt-20">
+    <section aria-labelledby="hero-title" className="mx-auto max-w-[76rem] px-5 pt-12 sm:px-8 sm:pt-14">
+      {/* Without scripts the extraction never runs, so show its finished state. */}
+      <noscript>
+        <style dangerouslySetInnerHTML={{ __html: ".hero-title{color:var(--quartz)!important;font-stretch:116%!important;font-weight:560!important}.hero-value{opacity:1!important;font-stretch:100%!important}" }} />
+      </noscript>
       <h1
         id="hero-title"
-        className={`t-display transition-[font-stretch,font-weight,color] ease-[cubic-bezier(0.2,0.7,0.2,1)] lg:whitespace-nowrap ${
+        className={`hero-title t-display transition-[font-stretch,font-weight,color] ease-[cubic-bezier(0.2,0.7,0.2,1)] lg:whitespace-nowrap ${
           refined ? "text-quartz [font-stretch:116%] [font-weight:560]" : "text-shale [font-stretch:62%] [font-weight:340]"
         }`}
         style={{ transitionDuration: `${spanCount * STEP_MS}ms` }}
@@ -145,7 +149,7 @@ export function ExtractionHero() {
         <span className="lg:block">into systems you can check.</span>
       </h1>
 
-      <div ref={box} className="relative mt-12 grid gap-6 lg:mt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
+      <div ref={box} className="relative mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 lg:mt-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
         {/* Raw input */}
         <div>
           <div className="mb-3 flex items-baseline justify-between t-micro text-shale">
@@ -234,18 +238,18 @@ export function ExtractionHero() {
                   onFocus={() => shown && setFocus(f.field)}
                   onBlur={() => setFocus(null)}
                   onClick={() => shown && setFocus((x) => (x === f.field ? null : f.field))}
-                  className={`grid grid-cols-[6.5rem_1fr] items-baseline gap-4 px-4 py-2.5 transition-colors duration-300 sm:px-5 ${
+                  className={`grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4 px-4 py-2.5 transition-colors duration-300 sm:px-5 ${
                     i > 0 ? "border-t border-seam/70" : ""
                   } ${lit ? "bg-trace/10" : ""} ${shown ? "cursor-pointer" : ""}`}
                 >
                   <dt className={`t-data ${lit ? "text-trace" : "text-shale"}`}>{f.label}</dt>
                   <dd
-                    className={`transition-[opacity,font-stretch] duration-500 ${
+                    className={`hero-value [overflow-wrap:anywhere] transition-[opacity,font-stretch] duration-500 ${
                       shown ? "opacity-100 [font-stretch:100%]" : "opacity-0 [font-stretch:70%]"
                     }`}
                   >
                     {f.field === "contact" ? (
-                      <a href={`mailto:${profile.email}`} className="underline decoration-seam underline-offset-4 hover:decoration-trace" tabIndex={shown ? 0 : -1}>
+                      <a href={`mailto:${profile.email}`} className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" tabIndex={shown ? 0 : -1}>
                         {f.value}
                       </a>
                     ) : (
@@ -262,7 +266,7 @@ export function ExtractionHero() {
             <button
               onClick={run}
               disabled={!done}
-              className="shrink-0 rounded-md border border-seam px-2.5 py-1 text-quartz transition-colors hover:border-trace/60 disabled:opacity-40"
+              className="tap shrink-0 rounded-md border border-seam px-2.5 py-1 text-quartz transition-colors hover:border-trace/60 disabled:opacity-40"
             >
               Run again
             </button>
@@ -270,16 +274,15 @@ export function ExtractionHero() {
         </div>
       </div>
 
-      <div className="mt-14 grid gap-8 border-t border-seam pt-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
-        <p className="measure text-[1.1875rem] leading-[1.6] text-quartz/90">
-          I&rsquo;m Tomas, a software engineer working on AI and data systems. Recently: LLM extraction over 40,065 Hacker News
-          hiring posts on Databricks, a stock research tool that discards unsourced model claims, and a gateway that keeps LLM
-          endpoints safe when prompts or providers misbehave. I started out writing a Unix shell in C.
+      <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-seam pt-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
+        <p className="measure text-quartz/90">
+          Recently: LLM extraction over 40,065 Hacker News hiring posts, a stock research tool that discards unsourced model
+          claims, and a gateway that keeps LLM endpoints safe when prompts or providers misbehave.
         </p>
         <div className="flex flex-wrap content-start items-center gap-3">
           <Link
             href="/projects/"
-            className="rounded-md bg-quartz px-4 py-2.5 font-[560] text-slate transition-colors hover:bg-gold"
+            className="rounded-md bg-quartz px-4 py-2.5 font-[560] text-slate transition-colors hover:bg-metal"
           >
             Explore projects
           </Link>
@@ -293,7 +296,7 @@ export function ExtractionHero() {
             href={profile.github}
             target="_blank"
             rel="me noopener"
-            className="rounded-md px-2 py-2.5 text-shale underline decoration-seam underline-offset-4 transition-colors hover:text-quartz"
+            className="tap rounded-md py-2.5 text-shale underline decoration-seam underline-offset-4 transition-colors hover:text-quartz"
           >
             GitHub
           </a>

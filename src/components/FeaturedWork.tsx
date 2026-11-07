@@ -21,7 +21,7 @@ export function FeaturedWork() {
         <h2 id="work-title" className="t-h2">
           Selected work
         </h2>
-        <Link href="/projects/" className="t-small text-shale underline decoration-seam underline-offset-4 hover:text-quartz">
+        <Link href="/projects/" className="tap t-small text-shale underline decoration-seam underline-offset-4 hover:text-quartz">
           All projects, with filters
         </Link>
       </div>
@@ -31,8 +31,8 @@ export function FeaturedWork() {
           <li key={p.slug} className="group border-b border-seam py-8">
             <div className="grid gap-x-10 gap-y-3 md:grid-cols-[minmax(14rem,18rem)_1fr] lg:grid-cols-[minmax(14rem,18rem)_1fr_auto]">
               <div>
-                <h3 className="t-h2 [font-stretch:114%]">
-                  <Link href={`/projects/${p.slug}/`} className="hover:text-gold">
+                <h3 className="text-[1.625rem] leading-[1.15] font-[540] [font-stretch:114%]">
+                  <Link href={`/projects/${p.slug}/`} className="tap hover:text-metal">
                     {p.name}
                   </Link>
                 </h3>

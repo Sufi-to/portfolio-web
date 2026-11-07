@@ -13,14 +13,6 @@ const STATUSES: Status[] = ["shipped", "prototype", "coursework", "archived"];
 
 const EXAMPLES = ["domain:ai status:shipped", "stack:fastapi", "databricks", "shelf:foundations"];
 
-const domainDot: Record<Domain, string> = {
-  ai: "bg-gold",
-  data: "bg-trace",
-  backend: "bg-silver",
-  fullstack: "bg-[var(--stratum-web)]",
-  systems: "bg-bronze",
-};
-
 /**
  * The project catalog: a query bar with a small filter language, chips that
  * write into the same query, the equivalent SQL shown under the results, and
@@ -76,18 +68,17 @@ export function ProjectExplorer() {
       return next;
     });
 
-  const chip = (key: "domain" | "status", value: string, label: string, dot?: string) => {
+  const chip = (key: "domain" | "status", value: string, label: string) => {
     const on = hasToken(parsed, key, value);
     return (
       <button
         key={`${key}:${value}`}
         onClick={() => setQ((cur) => toggleToken(cur, key, value))}
         aria-pressed={on}
-        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 t-micro transition-colors ${
+        className={`tap rounded-full border px-3 py-1.5 t-micro transition-colors ${
           on ? "border-trace/70 bg-trace/10 text-quartz" : "border-seam text-quartz/80 hover:border-shale/60"
         }`}
       >
-        {dot && <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${dot}`} />}
         {label}
       </button>
     );
@@ -96,7 +87,7 @@ export function ProjectExplorer() {
   return (
     <div>
       {/* Query bar */}
-      <div className="rounded-lg border border-seam bg-slab/70 focus-within:border-trace/60">
+      <div className="rounded-lg border border-seam bg-slab/70 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-trace">
         <label className="flex items-center gap-3 px-4">
           <span aria-hidden className="t-data text-trace">›</span>
           <span className="sr-only">Filter projects</span>
@@ -106,7 +97,7 @@ export function ProjectExplorer() {
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === "Escape" && setQ("")}
             placeholder="Try domain:ai status:shipped"
-            className="w-full bg-transparent py-3.5 t-data text-[0.9375rem] text-quartz placeholder:text-shale/70 focus:outline-none"
+            className="w-full bg-transparent py-3.5 t-data text-[0.9375rem] text-quartz placeholder:text-shale/70 focus-visible:outline-transparent"
             spellCheck={false}
             autoComplete="off"
           />
@@ -123,7 +114,7 @@ export function ProjectExplorer() {
       <div className="mt-4 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="mr-1 w-14 t-micro text-shale">Domain</span>
-          {DOMAINS.map((d) => chip("domain", d, domainLabel[d], domainDot[d]))}
+          {DOMAINS.map((d) => chip("domain", d, domainLabel[d]))}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="mr-1 w-14 t-micro text-shale">Status</span>

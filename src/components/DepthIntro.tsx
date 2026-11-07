@@ -2,17 +2,17 @@
 
 import { useDepth } from "./DepthProvider";
 import { depthInfo } from "@/content/site";
+import { featured } from "@/content/projects";
 import type { Depth } from "@/content/types";
 
 const ORDER: Depth[] = ["gold", "silver", "bronze"];
 const BAR: Record<Depth, string> = { gold: "bg-gold", silver: "bg-silver", bronze: "bg-bronze" };
-const BODY: Record<Depth, string> = {
-  gold: "What each project does and what it proved, in one sentence.",
-  silver: "The problem, the build and the decisions, with an architecture you can send requests through.",
-  bronze: "The files, lines and commits behind each claim, linked to GitHub.",
-};
 
-/** Teaches the depth switch by being one: each column sets the level. */
+const sample = featured.find((p) => p.slug === "gatehouse")!;
+const decision = sample.silver!.decisions[0];
+const proof = sample.evidence![0];
+
+/** Teaches the depth switch by being one: each column sets the level and shows one project at it. */
 export function DepthIntro() {
   const { depth, setDepth } = useDepth();
   return (
@@ -20,7 +20,8 @@ export function DepthIntro() {
       <h2 id="depth-title" className="t-h2 max-w-2xl text-balance">
         Read every project at the depth you have time for.
       </h2>
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+      <p className="mt-3 text-quartz/80">Here is {sample.name} at all three. Pick one and the whole site follows.</p>
+      <div className="mt-8 grid gap-3 md:grid-cols-3">
         {ORDER.map((d) => {
           const on = d === depth;
           return (
@@ -28,7 +29,7 @@ export function DepthIntro() {
               key={d}
               onClick={() => setDepth(d)}
               aria-pressed={on}
-              className={`group relative overflow-hidden rounded-lg border p-5 text-left transition-colors ${
+              className={`group relative flex flex-col overflow-hidden rounded-lg border p-5 text-left transition-colors ${
                 on ? "border-shale/50 bg-slab" : "border-seam hover:border-shale/40"
               }`}
             >
@@ -37,7 +38,24 @@ export function DepthIntro() {
                 <span className="t-h3">{depthInfo[d].label}</span>
                 <kbd className="t-data text-shale">{depthInfo[d].key}</kbd>
               </span>
-              <span className="mt-2 block t-small text-quartz/80">{BODY[d]}</span>
+              <span className="t-small text-shale">{depthInfo[d].hint}</span>
+              <span className="mt-4 block border-t border-seam pt-4 t-small text-quartz/90">
+                {d === "gold" && sample.gold}
+                {d === "silver" && (
+                  <>
+                    <span className="block font-[560] [font-stretch:104%]">{decision.title}</span>
+                    {decision.body}
+                  </>
+                )}
+                {d === "bronze" && (
+                  <>
+                    {proof.claim}
+                    <span className="mt-2 block t-data text-shale [overflow-wrap:anywhere]">
+                      {proof.path}:{proof.line} @ {proof.sha.slice(0, 7)}
+                    </span>
+                  </>
+                )}
+              </span>
             </button>
           );
         })}

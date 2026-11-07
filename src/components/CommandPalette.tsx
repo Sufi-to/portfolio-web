@@ -193,7 +193,7 @@ export function CommandPalette() {
             className="w-full max-w-xl overflow-hidden rounded-xl border border-seam bg-slab shadow-[0_24px_80px_-24px_rgba(0,0,0,0.7)]"
             onKeyDown={onKeyDown}
           >
-            <div className="flex items-center gap-3 border-b border-seam px-4">
+            <div className="flex items-center gap-3 border-b border-seam px-4 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-trace">
               <span aria-hidden className="t-data text-trace">›</span>
               <input
                 ref={inputRef}
@@ -205,7 +205,7 @@ export function CommandPalette() {
                 aria-activedescendant={results[active] ? `cmd-${results[active].id}` : undefined}
                 role="combobox"
                 aria-expanded="true"
-                className="h-13 w-full bg-transparent py-4 text-quartz placeholder:text-shale/70 focus:outline-none"
+                className="h-13 w-full bg-transparent py-4 text-quartz placeholder:text-shale/70 focus-visible:outline-transparent"
               />
               <kbd className="t-data rounded border border-seam px-1.5 text-shale">esc</kbd>
             </div>

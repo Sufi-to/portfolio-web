@@ -15,23 +15,23 @@ export function SiteFooter() {
         </div>
         <ul className="flex flex-wrap items-start gap-x-6 gap-y-2 t-small">
           <li>
-            <a className="underline decoration-seam underline-offset-4 hover:decoration-trace" href={`mailto:${profile.email}`}>
+            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={`mailto:${profile.email}`}>
               {profile.email}
             </a>
           </li>
           <li>
-            <a className="underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.github} rel="me noopener" target="_blank">
+            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.github} rel="me noopener" target="_blank">
               GitHub
             </a>
           </li>
           <li>
-            <a className="underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.linkedin} rel="me noopener" target="_blank">
+            <a className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.linkedin} rel="me noopener" target="_blank">
               LinkedIn
             </a>
           </li>
           {profile.cvUrl && (
             <li>
-              <Link className="underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.cvUrl}>
+              <Link className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" href={profile.cvUrl}>
                 CV
               </Link>
             </li>

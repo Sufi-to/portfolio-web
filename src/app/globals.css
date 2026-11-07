@@ -14,7 +14,7 @@
   --slab-2: #2a3035;
   --seam: #353c42;
   --quartz: #e6eae8;
-  --shale: #9aa4a9;
+  --shale: #a4aeb3;
   --gold: #d9b65b;
   --silver: #bcc5cc;
   --bronze: #c08a63;
@@ -83,7 +83,7 @@ a { color: inherit; }
 }
 
 @layer components {
-/* Type scale: 13 / 15 / 17 / 21 / 28 / 40 / 64. */
+/* Type scale: 13 / 15 / 17 / 21 / 26 / 36 / 56 / 76. */
 .t-display {
   font-size: clamp(2.5rem, 6.4vw, 4.75rem);
   line-height: 0.98;
@@ -92,8 +92,8 @@ a { color: inherit; }
   font-stretch: 116%;
 }
 .t-h1, .t-h2 { text-wrap: balance; }
-.t-h1 { font-size: clamp(2rem, 4vw, 2.5rem); line-height: 1.05; font-weight: 560; font-stretch: 112%; letter-spacing: -0.015em; }
-.t-h2 { font-size: 1.75rem; line-height: 1.15; font-weight: 540; font-stretch: 110%; letter-spacing: -0.01em; }
+.t-h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.02; font-weight: 560; font-stretch: 112%; letter-spacing: -0.015em; }
+.t-h2 { font-size: clamp(1.875rem, 3vw, 2.25rem); line-height: 1.12; font-weight: 540; font-stretch: 110%; letter-spacing: -0.01em; }
 .t-h3 { font-size: 1.3125rem; line-height: 1.25; font-weight: 560; font-stretch: 104%; }
 .t-small { font-size: 0.9375rem; line-height: 1.5; }
 .t-micro { font-size: 0.8125rem; line-height: 1.4; }
@@ -128,6 +128,11 @@ a { color: inherit; }
   box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.35), 0 1px 0 rgb(255 255 255 / 0.03);
 }
 
+/* Small links and controls grow to a thumb-sized target below the desktop layout. */
+@media (max-width: 1023px) {
+  .tap { display: inline-flex; align-items: center; min-height: 2.75rem; }
+}
+
 /* Core samples: the first scenario's route draws itself on hover. */
 .core-trace {
   stroke-dasharray: 1;
@@ -140,42 +145,6 @@ a { color: inherit; }
 .group:hover .core-on,
 .group:focus-within .core-on { stroke: var(--trace); stroke-opacity: 1; }
 
-}
-
-/*
-  Ore grain: a faint fixed noise over the slate so the ground reads as
-  material. Pointer-transparent and below every interactive layer.
-*/
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-}
-
-/*
-  Section headings refine as they enter the viewport: narrow (raw) to wide
-  (refined), the same type rule the hero uses. Scroll-driven, no JS; browsers
-  without scroll timelines just show the refined state.
-*/
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    main section h2.t-h2,
-    main section h2 > .t-h2,
-    main figcaption > .t-h2 {
-      animation: refine linear both;
-      animation-timeline: view();
-      animation-range: entry 10% cover 30%;
-    }
-  }
-}
-@keyframes refine {
-  from { font-stretch: 72%; opacity: 0.55; letter-spacing: 0.01em; }
-  to { font-stretch: 110%; opacity: 1; letter-spacing: -0.01em; }
 }
 
 @media (prefers-reduced-motion: reduce) {

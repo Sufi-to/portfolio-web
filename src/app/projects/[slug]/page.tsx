@@ -32,7 +32,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       </Link>
       <h1 className="mt-6 t-display [font-stretch:112%]">{p.name}</h1>
       <p className="mt-3 t-small text-shale">
-        {p.domains.map((d) => domainLabel[d]).join(" and ")}, {p.year}
+        {p.domains.map((d) => domainLabel[d]).join(" and ")}
       </p>
       <Hallmark project={p} className="mt-4" />
       <div className="mt-10">
