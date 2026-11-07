@@ -74,7 +74,7 @@ export function CommandPalette() {
       router.push(href);
     };
     const list: Command[] = [
-      ...nav.map((n) => ({ id: `nav-${n.href}`, group: "Go to" as const, label: n.label, run: go(n.href) })),
+      ...[...nav, { href: "/evidence/", label: "Evidence" }].map((n) => ({ id: `nav-${n.href}`, group: "Go to" as const, label: n.label, run: go(n.href) })),
       ...projects.map((p) => ({
         id: `p-${p.slug}`,
         group: "Projects" as const,

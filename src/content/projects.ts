@@ -5,20 +5,35 @@ import type { Project, Evidence } from "./types";
 
 const gh = (repo: string) => `https://github.com/${repo}`;
 
-const ev = (
-  repo: string,
-  sha: string,
-  claim: string,
-  path: string,
-  line?: number,
-): Evidence => ({ claim, repo, path, line, sha });
+const ev = (repo: string, sha: string, claim: string, path: string, check: Pick<Evidence, "line" | "expect" | "count" | "patterns">): Evidence => ({
+  claim,
+  repo,
+  path,
+  sha,
+  ...check,
+});
 
 const HN = "Sufi-to/hn-hiring-observatory";
 const HN_SHA = "00c3178dc550ce795d0397f4843db035387def0f";
+const GALLERY = { w: 1108, h: 769 };
 const FIN = "Sufi-to/FinRadar";
 const FIN_SHA = "a79fdcc49fe557f11af81bb4dc6fac6ede05f041";
 const GATE = "Sufi-to/EndToEndRag";
 const GATE_SHA = "a9908b4dbce143301051c449e8bb8e19c8cee38f";
+/** Gatehouse's input filter, copied from app/security.py. The verifier compares them with the source. */
+export const INJECTION_PATTERNS = [
+  "ignore\\s+(all\\s+)?previous\\s+instructions",
+  "forget\\s+(all\\s+)?previous",
+  "new\\s+instructions\\s*:",
+  "system\\s*prompt",
+  "---\\s*end\\s*(of)?\\s*prompt",
+  "pretend\\s+you\\s+are",
+  "act\\s+as\\s+(if\\s+)?you",
+  "bypass\\s+(all\\s+)?restrictions",
+  "reveal\\s+(your|the)\\s+(system|instructions|prompt)",
+  "you\\s+are\\s+now\\s+(DAN|jailbroken)",
+] as const;
+
 const ASSAY = "Sufi-to/Object_detection_with_approximate_valuations";
 const ASSAY_SHA = "6ec12e430529dc6e07b683eee9c3facb53800518";
 const PAY = "Sufi-to/Rule_based_credit_scoring_payslip";
@@ -63,11 +78,19 @@ export const projects: Project[] = [
       ],
     },
     evidence: [
-      ev(HN, HN_SHA, "Generated SQL must parse to exactly one SELECT or UNION", "app/backend.py", 44),
-      ev(HN, HN_SHA, "Extraction runs through Databricks ai_query over every post", "notebooks/05_extract_all_posts.py", 238),
-      ev(HN, HN_SHA, "Five-model comparison results, GPT OSS 120B at 19/20", "quality/model-comparison-results.json"),
-      ev(HN, HN_SHA, "Full extraction coverage report: 40,065 outputs", "quality/full-extraction-results.json"),
-      ev(HN, HN_SHA, "Automated tests for app, backend and ingestion", "tests/test_app_backend.py"),
+      ev(HN, HN_SHA, "Generated SQL must parse to exactly one SELECT or UNION", "app/backend.py", { line: 44, expect: "if len(trees) != 1 or not isinstance" }),
+      ev(HN, HN_SHA, "Extraction runs through Databricks ai_query over every post", "notebooks/05_extract_all_posts.py", { line: 238, expect: "ai_query({literal(MODEL)}" }),
+      ev(HN, HN_SHA, "Five-model comparison results, GPT OSS 120B at 19/20", "quality/model-comparison-results.json", { expect: "\"model\":\"databricks-gpt-oss-120b\",\"valid_outputs\":20,\"fully_passing_posts\":19" }),
+      ev(HN, HN_SHA, "Full extraction coverage report: 40,065 outputs", "quality/full-extraction-results.json", { expect: "\"posts\": \"40065\"" }),
+      ev(HN, HN_SHA, "82 months of threads covered, January 2020 to October 2026", "quality/full-extraction-results.json", { expect: '"months": "82"' }),
+      ev(HN, HN_SHA, "Rails gained the most share from Q2 to Q3 2026, +1.91 percentage points", "docs/demo.md", { expect: "Rails +1.91 percentage points" }),
+      ev(HN, HN_SHA, "Automated tests for app, backend and ingestion", "tests/test_app_backend.py", { expect: "def test_rejects_mutations_external_sources" }),
+    ],
+    mediaDate: "25 October 2026",
+    media: [
+      { src: "/media/hn/03-growth.jpg", alt: "Bar chart and table of hiring skills ranked by share change from Q2 to Q3 2026, led by Rails at plus 1.91 percentage points.", width: GALLERY.w, height: GALLERY.h },
+      { src: "/media/hn/05-sql-wide.jpg", alt: "The Ask the data view showing generated SQL, its result table and a chart of the same growth figures.", width: GALLERY.w, height: GALLERY.h },
+      { src: "/media/hn/02-skills.jpg", alt: "Line chart of the share of hiring ads mentioning Python, TypeScript and Rust from October 2025 to September 2026.", width: GALLERY.w, height: GALLERY.h },
     ],
     diagram: {
       cols: 5,
@@ -165,11 +188,11 @@ export const projects: Project[] = [
       ],
     },
     evidence: [
-      ev(FIN, FIN_SHA, "Reasoning points with unknown source IDs are removed", "apps/api/app/services/validator.py", 23),
-      ev(FIN, FIN_SHA, "K2 Think V2 client with configurable model and timeout", "apps/api/app/services/llm_client.py", 66),
-      ev(FIN, FIN_SHA, "SEC EDGAR provider adapter", "apps/api/app/services/live/providers/sec_edgar.py"),
-      ev(FIN, FIN_SHA, "Contradiction detection across evidence streams", "apps/api/app/services/contradictions.py"),
-      ev(FIN, FIN_SHA, "Backend test suite (114 test functions)", "apps/api/tests/test_report_generator.py"),
+      ev(FIN, FIN_SHA, "Reasoning points with unknown source IDs are removed", "apps/api/app/services/validator.py", { line: 23, expect: "was not found in sources" }),
+      ev(FIN, FIN_SHA, "K2 Think V2 client with configurable model and timeout", "apps/api/app/services/llm_client.py", { line: 66, expect: "k2_timeout_seconds" }),
+      ev(FIN, FIN_SHA, "SEC EDGAR provider adapter", "apps/api/app/services/live/providers/sec_edgar.py", { expect: "class SecEdgarProvider" }),
+      ev(FIN, FIN_SHA, "Contradiction detection across evidence streams", "apps/api/app/services/contradictions.py", { expect: "def detect_contradictions" }),
+      ev(FIN, FIN_SHA, "114 test functions across the backend test suite", "apps/api/tests", { expect: "def test_", count: { pattern: "def test_", equals: 114 } }),
     ],
     diagram: {
       cols: 5,
@@ -269,10 +292,11 @@ export const projects: Project[] = [
       ],
     },
     evidence: [
-      ev(GATE, GATE_SHA, "Prompt-injection patterns checked before any model call", "app/security.py", 17),
-      ev(GATE, GATE_SHA, "Fallback model wired into the LangGraph agent", "app/agent.py", 78),
-      ev(GATE, GATE_SHA, "Cache keys are SHA-256 of the normalized message", "app/cache.py", 30),
-      ev(GATE, GATE_SHA, "Architecture and request-flow write-up", "ARCHITECTURE.md"),
+      ev(GATE, GATE_SHA, "Prompt-injection patterns checked before any model call", "app/security.py", { line: 17, expect: "INJECTION_PATTERNS = [" }),
+      ev(GATE, GATE_SHA, "The live filter on this site runs these same patterns", "app/security.py", { expect: "INJECTION_PATTERNS = [", patterns: INJECTION_PATTERNS }),
+      ev(GATE, GATE_SHA, "Fallback model wired into the LangGraph agent", "app/agent.py", { line: 78, expect: "def try_fallback" }),
+      ev(GATE, GATE_SHA, "Cache keys are SHA-256 of the normalized message", "app/cache.py", { line: 30, expect: "hashlib.sha256(normalized.encode())" }),
+      ev(GATE, GATE_SHA, "Architecture and request-flow write-up", "ARCHITECTURE.md", { expect: "# Architecture Design" }),
     ],
     diagram: {
       cols: 5,
@@ -379,11 +403,11 @@ export const projects: Project[] = [
       ],
     },
     evidence: [
-      ev(ASSAY, ASSAY_SHA, "EXIF metadata extraction with PIL and exifread fallback", "orion_africa_images/image_processor.py", 119),
-      ev(ASSAY, ASSAY_SHA, "YOLOv8 model loading and object detection", "orion_africa_images/image_processor.py", 213),
-      ev(ASSAY, ASSAY_SHA, "Asset values are mocked lookups", "orion_africa_images/config.py", 152),
-      ev(ASSAY, ASSAY_SHA, "Final report sent to the rule-based scoring API", "orion_africa_images/external_api_client.py", 53),
-      ev(PAY, PAY_SHA, "Payslip credit score calculation", "main.py", 51),
+      ev(ASSAY, ASSAY_SHA, "EXIF metadata extraction with PIL and exifread fallback", "orion_africa_images/image_processor.py", { line: 119, expect: "def extract_metadata" }),
+      ev(ASSAY, ASSAY_SHA, "YOLOv8 model loading and object detection", "orion_africa_images/image_processor.py", { line: 213, expect: "def detect_objects" }),
+      ev(ASSAY, ASSAY_SHA, "Asset values are mocked lookups", "orion_africa_images/config.py", { line: 152, expect: "def get_mock_asset_value" }),
+      ev(ASSAY, ASSAY_SHA, "Final report sent to the rule-based scoring API", "orion_africa_images/external_api_client.py", { line: 53, expect: "rule-based-credit-scoring" }),
+      ev(PAY, PAY_SHA, "Payslip credit score calculation", "main.py", { line: 51, expect: "def calculate_credit_score" }),
     ],
     diagram: {
       cols: 5,
@@ -596,4 +620,10 @@ export const statusLabel: Record<Project["status"], string> = {
 };
 
 export const evidenceUrl = (e: Evidence) =>
-  `https://github.com/${e.repo}/blob/${e.sha}/${e.path}${e.line ? `#L${e.line}` : ""}`;
+  `https://github.com/${e.repo}/${e.count ? "tree" : "blob"}/${e.sha}/${e.path}${e.line ? `#L${e.line}` : ""}`;
+
+/** Every checkable claim on the site, with the project it belongs to. */
+export const allEvidence = projects.flatMap((p) => (p.evidence ?? []).map((evidence) => ({ project: p, evidence })));
+
+/** A stable name for a claim, shared by the verifier and the ledger. */
+export const evidenceKey = (e: Evidence) => `${e.repo}/${e.path}#${e.line ?? ""}:${e.claim}`;

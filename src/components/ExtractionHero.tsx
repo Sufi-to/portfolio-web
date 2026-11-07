@@ -298,14 +298,14 @@ export function ExtractionHero() {
             })}
           </dl>
           <div className="flex items-center justify-between gap-4 border-t border-seam/70 px-4 py-2 t-micro text-shale sm:px-5">
-            <span className="hidden lg:inline">Hover a field to see where it came from.</span>
-            <span className="lg:hidden">Tap a field or a highlighted phrase to link them.</span>
+            <span className="hidden lg:inline">Hover a field to see its source. A replay, tagged by hand.</span>
+            <span className="lg:hidden">Tap a field to see its source. A replay, tagged by hand.</span>
             <button
               onClick={run}
               disabled={!done}
               className={`shrink-0 ${button("outline", "sm")}`}
             >
-              Run again
+              Replay
             </button>
           </div>
         </Panel>

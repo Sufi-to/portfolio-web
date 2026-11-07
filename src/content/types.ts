@@ -20,6 +20,20 @@ export interface Evidence {
   path: string;
   line?: number;
   sha: string;
+  /** Text that must appear at that line, or in the file when there is no line. */
+  expect: string;
+  /** For a claim about a whole folder: how many times a pattern must occur in it. */
+  count?: { pattern: string; equals: number };
+  /** Regex sources that must match the file's list exactly. */
+  patterns?: readonly string[];
+}
+
+/** One of the project's own images, shown as it was recorded. */
+export interface Media {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
 }
 
 export interface DiagramNode {
@@ -77,4 +91,7 @@ export interface Project {
   /** Bronze: claims with file and line references. */
   evidence?: Evidence[];
   diagram?: Diagram;
+  media?: Media[];
+  /** When the media was recorded, shown beside it. */
+  mediaDate?: string;
 }

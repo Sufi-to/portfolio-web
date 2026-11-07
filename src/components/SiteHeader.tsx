@@ -7,6 +7,7 @@ import { nav } from "@/content/site";
 import { profile } from "@/content/profile";
 import { button } from "@/lib/button";
 import { depthApplies } from "./DepthProvider";
+import { MotionToggle } from "./MotionToggle";
 import { DepthSwitch } from "./DepthSwitch";
 import { openPalette } from "./CommandPalette";
 
@@ -133,6 +134,7 @@ export function SiteHeader() {
             >
               Search pages and projects
             </button>
+            <MotionToggle inMenu />
           </nav>
         </div>
       </div>

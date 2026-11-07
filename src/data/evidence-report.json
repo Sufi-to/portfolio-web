@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-11-07",
+  "total": 22,
+  "passed": 22,
+  "results": {
+    "Sufi-to/hn-hiring-observatory/app/backend.py#44:Generated SQL must parse to exactly one SELECT or UNION": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/notebooks/05_extract_all_posts.py#238:Extraction runs through Databricks ai_query over every post": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/quality/model-comparison-results.json#:Five-model comparison results, GPT OSS 120B at 19/20": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/quality/full-extraction-results.json#:Full extraction coverage report: 40,065 outputs": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/quality/full-extraction-results.json#:82 months of threads covered, January 2020 to October 2026": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/docs/demo.md#:Rails gained the most share from Q2 to Q3 2026, +1.91 percentage points": {
+      "ok": true
+    },
+    "Sufi-to/hn-hiring-observatory/tests/test_app_backend.py#:Automated tests for app, backend and ingestion": {
+      "ok": true
+    },
+    "Sufi-to/FinRadar/apps/api/app/services/validator.py#23:Reasoning points with unknown source IDs are removed": {
+      "ok": true
+    },
+    "Sufi-to/FinRadar/apps/api/app/services/llm_client.py#66:K2 Think V2 client with configurable model and timeout": {
+      "ok": true
+    },
+    "Sufi-to/FinRadar/apps/api/app/services/live/providers/sec_edgar.py#:SEC EDGAR provider adapter": {
+      "ok": true
+    },
+    "Sufi-to/FinRadar/apps/api/app/services/contradictions.py#:Contradiction detection across evidence streams": {
+      "ok": true
+    },
+    "Sufi-to/FinRadar/apps/api/tests#:114 test functions across the backend test suite": {
+      "ok": true
+    },
+    "Sufi-to/EndToEndRag/app/security.py#17:Prompt-injection patterns checked before any model call": {
+      "ok": true
+    },
+    "Sufi-to/EndToEndRag/app/security.py#:The live filter on this site runs these same patterns": {
+      "ok": true
+    },
+    "Sufi-to/EndToEndRag/app/agent.py#78:Fallback model wired into the LangGraph agent": {
+      "ok": true
+    },
+    "Sufi-to/EndToEndRag/app/cache.py#30:Cache keys are SHA-256 of the normalized message": {
+      "ok": true
+    },
+    "Sufi-to/EndToEndRag/ARCHITECTURE.md#:Architecture and request-flow write-up": {
+      "ok": true
+    },
+    "Sufi-to/Object_detection_with_approximate_valuations/orion_africa_images/image_processor.py#119:EXIF metadata extraction with PIL and exifread fallback": {
+      "ok": true
+    },
+    "Sufi-to/Object_detection_with_approximate_valuations/orion_africa_images/image_processor.py#213:YOLOv8 model loading and object detection": {
+      "ok": true
+    },
+    "Sufi-to/Object_detection_with_approximate_valuations/orion_africa_images/config.py#152:Asset values are mocked lookups": {
+      "ok": true
+    },
+    "Sufi-to/Object_detection_with_approximate_valuations/orion_africa_images/external_api_client.py#53:Final report sent to the rule-based scoring API": {
+      "ok": true
+    },
+    "Sufi-to/Rule_based_credit_scoring_payslip/main.py#51:Payslip credit score calculation": {
+      "ok": true
+    }
+  }
+}

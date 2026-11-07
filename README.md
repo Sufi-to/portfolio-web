@@ -1,8 +1,9 @@
 # Refinery — Tomas Teclehaimanot's portfolio
 
 A portfolio built like a data pipeline: raw evidence goes in, checkable claims
-come out. Every project can be read at three depths, and every claim at the
-deepest level links to the file, line and commit that proves it.
+come out. Every project can be read at three depths. The case studies' claims
+link to the file, line and commit behind them, and a script re-checks each one
+against that commit.
 
 ## Run it
 
@@ -56,8 +57,8 @@ scripts/ingest.mjs    Bronze ingestion from GitHub
 ```
 
 **Adding a project** means adding one object to `src/content/projects.ts`.
-Give it a `diagram` and it gets a runnable architecture trace; give it
-`evidence` and it gets Bronze links. Its page under `/projects/<slug>/` is
+Give it a `diagram` and it gets a replayable architecture trace; give it
+`evidence` and it gets Bronze links, checked by `npm run verify`. Its page under `/projects/<slug>/` is
 generated automatically.
 
 **Adding a page** means one entry in `src/content/site.ts` and a folder under

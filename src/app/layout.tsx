@@ -9,8 +9,10 @@ import { OreField } from "@/components/OreField";
 import { DepthToast } from "@/components/DepthToast";
 import { MotionToggle } from "@/components/MotionToggle";
 import { profile } from "@/content/profile";
+import { shareImage, siteUrl } from "@/content/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(new URL(siteUrl).origin),
   title: { default: `${profile.name}, AI and data engineering`, template: `%s | ${profile.name}` },
   description:
     "Software engineer building AI and data systems that show their evidence: LLM extraction pipelines on Databricks, source-checked research tools and hardened LLM gateways.",
@@ -18,8 +20,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: `${profile.name}, AI and data engineering`,
-    description: "Pipelines and LLM systems you can check. Every project claim links to the code behind it.",
+    description: "Pipelines and LLM systems you can check, with claims re-verified against the code.",
+    url: `${siteUrl}/`,
+    images: [shareImage],
   },
+  twitter: { card: "summary_large_image", images: [shareImage] },
 };
 
 export const viewport: Viewport = {
@@ -31,6 +36,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-depth="gold">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: profile.name,
+              jobTitle: profile.role,
+              url: `${siteUrl}/`,
+              sameAs: [profile.github, profile.linkedin],
+            }),
+          }}
+        />
         <DepthProvider>
           <OreField />
           <SiteHeader />

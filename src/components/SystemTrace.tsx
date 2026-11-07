@@ -72,7 +72,7 @@ interface Props {
 }
 
 /**
- * An architecture diagram you can send a request through. Pick a scenario,
+ * A replay of how a request moves through a system. Pick a scenario,
  * and a packet travels the real path while a log lists each hop.
  */
 export function SystemTrace({ diagram, title, autoplay = false, bare = false, fitRows }: Props) {
@@ -181,7 +181,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
   return (
     <div ref={root} className={bare ? "flex flex-1 flex-col" : "rounded-lg border border-seam bg-slate"}>
       <div className={`flex flex-wrap items-center gap-2 border-b border-seam px-3 py-2.5 sm:px-4 ${bare ? "lg:min-h-[5.25rem]" : ""}`}>
-        <span className="mr-1 t-micro text-shale">Send a request:</span>
+        <span className="mr-1 t-micro text-shale">Replay a request:</span>
         {diagram.scenarios.map((s) => {
           const on = s.id === scenario.id && hop >= 0;
           return (
@@ -293,7 +293,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
       </p>
       <div className={`border-t border-seam px-4 py-3 t-data text-shale ${bare ? "min-h-[21rem] flex-1 sm:min-h-[15.5rem]" : ""}`}>
         {hop < 0 ? (
-          <p>Choose a request above to trace it through the system.</p>
+          <p>Choose a request above to replay its path through the system.</p>
         ) : (
           <ol className="space-y-0.5">
             {scenario.sample && (

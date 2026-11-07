@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   reactStrictMode: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
+  agentRules: false,
 };
 
 export default nextConfig;

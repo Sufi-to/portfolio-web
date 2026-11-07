@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { profile } from "@/content/profile";
 import bronze from "@/data/bronze.json";
+import report from "@/data/evidence-report.json";
 
 const link = "tap underline decoration-seam underline-offset-4 hover:decoration-trace";
 
@@ -9,7 +10,11 @@ export function SiteFooter() {
     <footer className="relative mt-24 border-t border-seam bg-slate">
       <div className="mx-auto flex max-w-[76rem] flex-wrap items-center justify-between gap-x-8 gap-y-3 px-5 py-5 t-data text-shale sm:px-8">
         <p>
-          {bronze.generatedAt.slice(0, 4)} {profile.name}. Every claim links to the code behind it. Git history ingested {bronze.generatedAt}.
+          {bronze.generatedAt.slice(0, 4)} {profile.name}.{" "}
+          <Link href="/evidence/" className="tap underline decoration-seam underline-offset-4 hover:decoration-trace">
+            {report.passed} of {report.total} claims verified {report.checkedAt}
+          </Link>
+          . Git history ingested {bronze.generatedAt}.
         </p>
         <ul className="flex flex-wrap items-center gap-x-5">
           <li>

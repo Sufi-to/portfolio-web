@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "npx --yes serve out -l 3000",
     "ingest": "node scripts/ingest.mjs",
+    "verify": "tsx scripts/verify-evidence.mjs",
+    "test": "tsx --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,6 +26,7 @@
     "@types/react-dom": "^19.3.0",
     "postcss": "^8.5.31",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
 }

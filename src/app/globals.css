@@ -142,6 +142,10 @@ a { color: inherit; }
   .tap { display: inline-flex; align-items: center; min-height: 2.75rem; }
 }
 
+/* For links inside small marks: a thumb-sized target without making the mark taller. */
+.tap-ghost { position: relative; }
+.tap-ghost::after { content: ""; position: absolute; inset: -0.875rem 0; }
+
 /* Operator panels: a titled box on the patch. Panels sit above the cables. */
 .panel {
   position: relative;

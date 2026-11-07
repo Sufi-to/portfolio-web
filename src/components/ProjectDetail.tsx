@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Depth, Project } from "@/content/types";
 import { evidenceUrl, statusLabel } from "@/content/projects";
 import { useDepth } from "./DepthProvider";
+import { MediaGallery } from "./MediaGallery";
 import { Panel } from "./Panel";
 import { SystemTrace } from "./SystemTrace";
 
@@ -11,7 +12,7 @@ const order: Depth[] = ["gold", "silver", "bronze"];
 
 /**
  * A project's content at the current depth. Gold: the one-line outcome and
- * links. Silver adds the build story and the runnable diagram. Bronze adds
+ * links. Silver adds the build story and the replayable diagram. Bronze adds
  * file-and-line evidence. `depth` overrides the visitor's setting.
  */
 export function ProjectDetail({
@@ -52,7 +53,7 @@ export function ProjectDetail({
           <dt className="t-micro text-shale">Source</dt>
           <dd className="flex flex-wrap gap-x-4 t-small">
             {p.repos.map((r) => (
-              <a key={r.url} href={r.url} target="_blank" rel="noopener" className="underline decoration-seam underline-offset-4 hover:decoration-trace">
+              <a key={r.url} href={r.url} target="_blank" rel="noopener" className="tap underline decoration-seam underline-offset-4 hover:decoration-trace">
                 {r.label} on GitHub
               </a>
             ))}
@@ -82,6 +83,8 @@ export function ProjectDetail({
               <p className="mt-2 text-quartz/90">{p.silver.build}</p>
             </div>
           </div>
+
+          <MediaGallery project={p} />
 
           {p.diagram && !hideTrace && <SystemTrace diagram={p.diagram} title={p.name} />}
 
@@ -125,10 +128,10 @@ export function ProjectDetail({
                   href={evidenceUrl(e)}
                   target="_blank"
                   rel="noopener"
-                  className="group grid gap-1 px-4 py-3 transition-colors hover:bg-slab-2 sm:grid-cols-[1fr_auto] sm:gap-6"
+                  className="group grid grid-cols-[minmax(0,1fr)] gap-1 px-4 py-3 transition-colors hover:bg-slab-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-6"
                 >
                   <span className="t-small">{e.claim}</span>
-                  <span className="t-data text-shale group-hover:text-bronze">
+                  <span className="t-data text-shale [overflow-wrap:anywhere] group-hover:text-bronze">
                     {e.path}
                     {e.line ? `:${e.line}` : ""} @ {e.sha.slice(0, 7)}
                   </span>
@@ -137,6 +140,9 @@ export function ProjectDetail({
             ))}
           </ul>
           </Panel>
+          <Link href={`/evidence/#${p.slug}`} className="tap mt-2 inline-block t-small text-shale underline decoration-seam underline-offset-4 hover:text-quartz">
+            See when these were last checked
+          </Link>
         </div>
       )}
       {at("bronze") && !p.evidence && (

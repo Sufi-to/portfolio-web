@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects, getProject, domainLabel } from "@/content/projects";
+import { shareImage, siteUrl } from "@/content/site";
 import { ProjectDetail } from "@/components/ProjectDetail";
+import { FilterDemo } from "@/components/FilterDemo";
 import { Hallmark } from "@/components/Hallmark";
 import { Panel } from "@/components/Panel";
 
@@ -14,7 +16,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = getProject((await params).slug);
-  return p ? { title: p.name, description: p.gold } : {};
+  return p
+    ? {
+        title: p.name,
+        description: p.gold,
+        openGraph: { title: p.name, description: p.gold, type: "article", url: `${siteUrl}/projects/${p.slug}/`, images: [shareImage] },
+      }
+    : {};
 }
 
 // A project page shows every depth at once. Full case studies will grow here.
@@ -36,11 +44,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         {p.domains.map((d) => domainLabel[d]).join(" and ")}
       </p>
       <Hallmark project={p} className="mt-4" />
-      <Panel name={`${p.slug.replaceAll("-", "_")}_detail`} meta="all three depths" tag="TXT" className="mt-10">
+      <Panel name={`${p.slug.replaceAll("-", "_")}_detail`} tag="TXT" className="mt-10">
         <div className="p-5 sm:p-6">
           <ProjectDetail project={p} depth="bronze" showGold level={2} />
         </div>
       </Panel>
+      {p.slug === "gatehouse" && (
+        <div className="mt-6">
+          <FilterDemo />
+        </div>
+      )}
       {next && (
         <nav aria-label="Next project" className="mt-20 border-t border-seam pt-8">
           <Link href={`/projects/${next.slug}/`} className="group block">
