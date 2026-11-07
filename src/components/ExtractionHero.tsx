@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { rawPost, extractedRecord, profile } from "@/content/profile";
 import { button } from "@/lib/button";
@@ -40,8 +39,10 @@ export function ExtractionHero() {
   const segments = useMemo(() => parse(rawPost), []);
   const spanCount = segments.filter((s) => s.span !== undefined).length;
 
-  const [step, setStep] = useState(0); // spans extracted so far
-  const [refined, setRefined] = useState(false);
+  // Starts finished, so the record reads the same without scripts; the replay
+  // runs once, just before the panels scroll into view.
+  const [step, setStep] = useState(spanCount); // spans extracted so far
+  const [refined, setRefined] = useState(true);
   const [rawOpen, setRawOpen] = useState(false);
   const [focus, setFocus] = useState<string | null>(null); // highlighted field
   const [lines, setLines] = useState<{ span: number; field: string; d: string; x: number; y: number }[]>([]);
@@ -73,8 +74,18 @@ export function ExtractionHero() {
   }, [spanCount]);
 
   useEffect(() => {
-    run();
+    if (!box.current) return;
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        near.disconnect();
+        run();
+      },
+      { rootMargin: "160px 0px" },
+    );
+    near.observe(box.current);
     return () => {
+      near.disconnect();
       if (timer.current) window.clearInterval(timer.current);
     };
   }, [run]);
@@ -139,59 +150,12 @@ export function ExtractionHero() {
   }, [step, spanCount]);
 
   return (
-    <section aria-labelledby="hero-title" className="mx-auto max-w-[76rem] px-5 pt-12 sm:px-8 sm:pt-14">
-      {/* Without scripts the extraction never runs, so show its finished state. */}
-      <noscript>
-        <style dangerouslySetInnerHTML={{ __html: ".hero-fill{color:var(--quartz)!important}.hero-value{opacity:1!important;font-stretch:100%!important}" }} />
-      </noscript>
-      <Panel name="headline" meta="raw in, refined out" tag="TXT" className="p-0">
-        <div className="px-5 py-5 sm:px-6">
-          <h1 id="hero-title" className="t-display uppercase lg:whitespace-nowrap">
-            <span className="hero-line hero-raw">I turn messy data </span>
-            <span className={`hero-line hero-fill ${refined ? "text-quartz" : "text-slab"}`}>into systems you can check.</span>
-          </h1>
-          <p className="mt-3 t-data text-small text-metal transition-colors duration-300">
-            <span aria-hidden>&gt; </span>
-            raw evidence in, checkable claims out
-            <span aria-hidden className="caret" />
-          </p>
-        </div>
-      </Panel>
-
-      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
-        <p className="measure text-quartz/90">
-          Recently: LLM extraction over 40,065 Hacker News hiring posts, a stock research tool that discards unsourced model
-          claims, and a gateway that keeps LLM endpoints safe when prompts or providers misbehave.
-        </p>
-        <div className="flex flex-wrap items-center gap-3 lg:content-start">
-          <Link
-            href="/projects/"
-            className={button("primary")}
-          >
-            Explore projects
-          </Link>
-          <a
-            href={`mailto:${profile.email}`}
-            className={button()}
-          >
-            Email me
-          </a>
-          <a
-            href={profile.github}
-            target="_blank"
-            rel="me noopener"
-            className="tap rounded-md py-2.5 text-shale underline decoration-seam underline-offset-4 transition-colors hover:text-quartz"
-          >
-            GitHub
-          </a>
-        </div>
-      </div>
-
-      <div ref={box} className="relative mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-28">
+    <section aria-label="Extraction replay" className="min-w-0">
+      <div ref={box} className="relative grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
         {/* Raw input */}
-        <Panel ref={rawPanel} name="raw_post" meta={`${rawPost.replace(/\[\[(.+?)\|\w+\]\]/g, "$1").length} chars, unstructured`} tag="TXT">
-          <div className="p-5 sm:p-6">
-            <p className={`t-raw text-lead leading-[1.75] text-shale sm:text-title ${rawOpen ? "" : "max-lg:line-clamp-4"}`}>
+        <Panel ref={rawPanel} portId="raw" out="left" name="raw_post" meta={`${rawPost.replace(/\[\[(.+?)\|\w+\]\]/g, "$1").length} chars, unstructured`} tag="TXT">
+          <div className="p-3.5">
+            <p className={`t-raw text-[0.8125rem] leading-[1.8] text-quartz/75 ${rawOpen ? "" : "max-lg:line-clamp-4"}`}>
               {segments.map((s, i) => {
                 if (s.span === undefined) return <span key={i}>{s.text}</span>;
                 const found = s.span < step;
@@ -252,8 +216,6 @@ export function ExtractionHero() {
           name="extracted_record"
           meta={done ? `${spanCount} spans, ${extractedRecord.length} fields` : `extracting ${step}/${spanCount}`}
           tag="DATA"
-          portId="record"
-          out="right"
         >
           <dl>
             {extractedRecord.map((f, i) => {
@@ -270,7 +232,7 @@ export function ExtractionHero() {
                   onFocus={() => shown && setFocus(f.field)}
                   onBlur={() => setFocus(null)}
                   onClick={() => shown && setFocus(f.field)}
-                  className={`grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4 px-4 py-2.5 transition-colors duration-300 sm:px-5 ${
+                  className={`grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4 px-3.5 py-1.5 transition-colors duration-300 ${
                     i > 0 ? "border-t border-seam/70" : ""
                   } ${lit ? "bg-trace/10" : ""} ${shown ? "cursor-pointer" : ""}`}
                 >
@@ -281,9 +243,7 @@ export function ExtractionHero() {
                     </button>
                   </dt>
                   <dd
-                    className={`hero-value [overflow-wrap:anywhere] transition-[opacity,font-stretch] duration-500 ${
-                      shown ? "opacity-100 [font-stretch:100%]" : "opacity-0 [font-stretch:70%]"
-                    }`}
+                    className={`hero-value t-data [overflow-wrap:anywhere] transition-opacity duration-500 ${shown ? "opacity-100" : "opacity-0"}`}
                   >
                     {f.field === "contact" ? (
                       <a href={`mailto:${profile.email}`} className="tap underline decoration-seam underline-offset-4 hover:decoration-trace" tabIndex={shown ? 0 : -1}>
@@ -297,7 +257,7 @@ export function ExtractionHero() {
               );
             })}
           </dl>
-          <div className="flex items-center justify-between gap-4 border-t border-seam/70 px-4 py-2 t-micro text-shale sm:px-5">
+          <div className="flex items-center justify-between gap-4 border-t border-seam/70 px-3.5 py-1.5 t-data text-[0.625rem] text-shale">
             <span className="hidden lg:inline">Hover a field to see its source. A replay, tagged by hand.</span>
             <span className="lg:hidden">Tap a field to see its source. A replay, tagged by hand.</span>
             <button

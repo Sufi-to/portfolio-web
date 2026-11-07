@@ -37,33 +37,39 @@ const path = [
 export default function AboutPage() {
   return (
     <>
-      <PageIntro title="About">
+      <div className="page">
+      <div className="page-col page-side">
+      <PageIntro name="bio_txt" title="About" lead="Raw evidence in, checkable claims out.">
         <p>
           I&rsquo;m {profile.shortName}, a software engineer who builds AI and data systems. What I care about most is that a
           system can show its work: the query behind a chart, the source behind a claim, the reason a request was refused.
         </p>
       </PageIntro>
+      </div>
+      <div className="page-col">
 
-      <section aria-labelledby="path-title" className="mx-auto mt-16 max-w-[76rem] px-5 sm:px-8">
-        <h2 id="path-title" className="t-h2">
+      <section aria-labelledby="path-title">
+        <h2 id="path-title" className="sr-only">
           How I got here
         </h2>
-        <Panel name="career_log" meta="2023 to 2026" tag="DATA" className="mt-6">
+        <Panel name="career_log" meta="2023 to 2026" tag="DATA" portId="career" in="left" out="right">
         <ol>
           {path.map((p, i) => (
-            <li key={p.when} className={`grid gap-2 p-5 md:grid-cols-[6rem_16rem_1fr] md:gap-8 ${i > 0 ? "border-t border-seam/70" : ""}`}>
+            <li key={p.when} className={`grid gap-1 p-3.5 md:grid-cols-[3.5rem_13rem_1fr] md:gap-5 ${i > 0 ? "border-t border-seam/70" : ""}`}>
               <span className="t-data text-shale">{p.when}</span>
-              <span className="t-h3">{p.what}</span>
-              <span className="text-quartz/85">{p.detail}</span>
+              <span className="text-[0.9375rem] font-bold">{p.what}</span>
+              <span className="t-small text-quartz/85">{p.detail}</span>
             </li>
           ))}
         </ol>
         </Panel>
       </section>
 
-      <section aria-label="Commit history" className="mx-auto mt-24 max-w-[76rem] px-5 sm:px-8">
+      <section aria-label="Commit history">
         <CommitStrata />
       </section>
+      </div>
+      </div>
     </>
   );
 }

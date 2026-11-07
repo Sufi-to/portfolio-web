@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { profile } from "@/content/profile";
-import { button } from "@/lib/button";
 import { Panel } from "./Panel";
 
 /** The home page's last word: the address itself, large, so nobody has to hunt for it. */
@@ -20,23 +19,23 @@ export function CloseContact() {
   };
 
   return (
-    <section aria-labelledby="close-title" className="mx-auto mt-16 max-w-[76rem] px-5 sm:px-8">
-      <Panel name="contact_out" meta="say hi" tag="TXT" portId="contact" in="left">
-      <div className="p-5 sm:p-6">
-      <h2 id="close-title" className="t-h2">
+    <section aria-labelledby="close-title" className="min-w-0">
+      <Panel name="contact_out" meta="say hi" tag="TXT" portId="contact" in="right">
+      <div className="p-3.5">
+      <h2 id="close-title" className="text-lg font-extrabold leading-tight">
         Building something with data or LLMs? Tell me about it.
       </h2>
       <a
         href={`mailto:${profile.email}`}
-        className="mt-6 block text-[clamp(1.375rem,5.4vw,4rem)] leading-[1.05] font-[560] tracking-[-0.02em] [font-stretch:108%] [overflow-wrap:anywhere] transition-[font-stretch,color] duration-500 hover:text-metal hover:[font-stretch:118%]"
+        className="ghost mt-3 block font-black uppercase leading-none text-[clamp(1.25rem,2vw,1.625rem)] [overflow-wrap:anywhere] transition-colors hover:text-signal"
       >
         {profile.email}
       </a>
       <button
         onClick={copy}
-        className={`mt-5 ${button("outline", "sm")}`}
+        className="chip tap mt-3"
       >
-        <span aria-live="polite">{copied ? "Email address copied" : "Copy email address"}</span>
+        <span aria-live="polite">{copied ? "ADDRESS COPIED" : "COPY ADDRESS"}</span>
       </button>
       </div>
       </Panel>

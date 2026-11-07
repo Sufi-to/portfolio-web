@@ -7,7 +7,6 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { ConsoleRecord } from "@/components/ConsoleRecord";
 import { OreField } from "@/components/OreField";
 import { DepthToast } from "@/components/DepthToast";
-import { MotionToggle } from "@/components/MotionToggle";
 import { profile } from "@/content/profile";
 import { shareImage, siteUrl } from "@/content/site";
 
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#121518",
+  themeColor: "#0a0a0b",
   colorScheme: "dark",
 };
 
@@ -57,7 +56,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CommandPalette />
           <ConsoleRecord />
           <DepthToast />
-          <MotionToggle />
         </DepthProvider>
       </body>
     </html>

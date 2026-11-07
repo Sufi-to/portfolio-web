@@ -11,7 +11,6 @@ const STRATA = [
   { key: "ai", label: "AI and data", color: "var(--stratum-ai)" },
 ] as const;
 
-const W = 1120;
 const H = 244;
 const BASE = 168;
 const LEFT = 8;
@@ -32,7 +31,8 @@ const MARKS: { month: string; text: string }[] = [
  * Real git history, layered like rock: oldest work at the bottom of each
  * column, newest on top. Built at build time from scripts/ingest.mjs.
  */
-export function CommitStrata() {
+export function CommitStrata({ wide = false }: { wide?: boolean }) {
+  const W = wide ? 1400 : 1120;
   const months = bronze.months as Month[];
   const [hover, setHover] = useState<number | null>(null);
   const colW = (W - LEFT * 2) / months.length;
@@ -45,17 +45,17 @@ export function CommitStrata() {
   const m = months[shown];
 
   return (
-    <Panel name="commit_strata" meta={`ingested ${bronze.generatedAt}`} tag="DATA" portId="strata" in="right" out="left">
-    <figure className="p-5 sm:p-6">
+    <Panel name="commit_strata" meta={`ingested ${bronze.generatedAt}`} tag="DATA" portId="strata" in="left">
+    <figure className="p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
         <figcaption className="max-w-2xl">
-          <span className="t-h2">{bronze.totalCommits.toLocaleString("en-US")} commits, from a C shell to LLM pipelines</span>
-          <span className="mt-2 block t-small text-shale">
+          <span className="text-lg font-extrabold">{bronze.totalCommits.toLocaleString("en-US")} commits, from a C shell to LLM pipelines</span>
+          <span className="mt-1 block t-data text-[0.6875rem] text-shale">
             Every month since my first commit, across {bronze.repos.length} repositories, counted from git history under my own
             identities. Heights use a square-root scale; coursework repos commit once per task, so 2023 and 2024 run tall.
           </span>
         </figcaption>
-        <ul className="flex gap-4 t-micro text-shale">
+        <ul className="flex gap-4 t-data text-[0.625rem] text-shale">
           {STRATA.map((s) => (
             <li key={s.key} className="flex items-center gap-1.5">
               <span aria-hidden className="h-2.5 w-2.5 rounded-sm" style={{ background: s.color }} />

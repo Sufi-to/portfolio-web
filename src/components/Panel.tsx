@@ -1,11 +1,11 @@
-import type { ReactNode, Ref } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 
 type Side = "left" | "right";
 
 interface Props {
   /** The operator's name, set in mono in the title bar: raw_post, work_index. */
   name: string;
-  /** What kind of operator this is: TXT, DATA, SYS or VIEW. */
+  /** What kind of operator this is: TXT, DATA, SYS, VIEW or LIVE. */
   tag: string;
   /** Short status beside the name. */
   meta?: ReactNode;
@@ -15,13 +15,14 @@ interface Props {
   out?: Side;
   ref?: Ref<HTMLDivElement>;
   className?: string;
+  style?: CSSProperties;
   children: ReactNode;
 }
 
 /** A titled box on the patch. Everything the site shows sits in one of these. */
-export function Panel({ name, tag, meta, portId, in: inSide, out: outSide, ref, className = "", children }: Props) {
+export function Panel({ name, tag, meta, portId, in: inSide, out: outSide, ref, className = "", style, children }: Props) {
   return (
-    <div ref={ref} className={`panel ${className}`}>
+    <div ref={ref} className={`panel ${className}`} style={style}>
       {inSide && <span aria-hidden className="port" data-side={inSide} data-port={`${portId}:in`} />}
       {outSide && <span aria-hidden className="port" data-side={outSide} data-port={`${portId}:out`} />}
       <div className="panel-bar">
@@ -29,7 +30,9 @@ export function Panel({ name, tag, meta, portId, in: inSide, out: outSide, ref, 
           {name}
           {meta && <span className="text-shale/90"> &middot; {meta}</span>}
         </span>
-        <span className="panel-tag">{tag}</span>
+        <span className="panel-tag" data-tag={tag}>
+          {tag}
+        </span>
       </div>
       {children}
     </div>

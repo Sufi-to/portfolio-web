@@ -10,14 +10,12 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <>
-      <PageIntro title="Projects">
-        {projects.length} projects from my GitHub, from C coursework to LLM pipelines. Filter with the chips or type a query;
-        open any row to read it at your chosen depth.
-      </PageIntro>
-      <div className="mx-auto mt-10 max-w-[76rem] px-5 sm:px-8">
-        <ProjectExplorer />
-      </div>
-    </>
+    <ProjectExplorer
+      intro={
+        <PageIntro name="work_txt" title="Projects">
+          <p>{projects.length} projects from my GitHub, from C coursework to LLM pipelines. Filter with the chips or type a query; pick a row to preview it in the viewer.</p>
+        </PageIntro>
+      }
+    />
   );
 }

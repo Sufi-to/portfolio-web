@@ -1,35 +1,35 @@
 @import "tailwindcss";
-@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/red-hat-display";
+@import "@fontsource-variable/sometype-mono";
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
 
 /*
-  Refinery tokens.
-  Slate-ore base, quartz text. Three metals mark depth (gold, silver, bronze)
-  and are used for nothing else. Trace blue marks anything live or focused.
+  Refinery tokens: a patch of operators on a dark ground.
+  One signal colour carries everything live or selected. The three metals
+  appear only on the depth control, where they name the levels.
 */
 :root {
-  --slate: #121518;
-  --slab: #191d20;
-  --slab-2: #24292d;
-  --seam: #2f353a;
-  --edge: #6b767d; /* Borders that identify a control: 3:1 against the panels. */
-  --quartz: #e6eae8;
-  --shale: #a4aeb3;
+  --slate: #0a0a0b;
+  --slab: #101013;
+  --slab-2: #161619;
+  --seam: #2a2a2e;
+  --edge: #66666a; /* Borders that identify a control: 3:1 against the panels. */
+  --rule: #e6e6e2;
+  --quartz: #e6e6e2;
+  --shale: #9a9a95;
+  --signal: #3dff88;
   --gold: #d9b65b;
   --silver: #bcc5cc;
   --bronze: #c08a63;
-  --trace: #7cc2e3;
   --reject: #e07a7a;
-  --stratum-systems: #6a757d;
-  --stratum-web: #9aa7af;
-  --stratum-ai: #dde3e0;
-  --metal: var(--gold);
+  --trace: var(--signal);
+  --metal: var(--signal);
+  --stratum-systems: #5f5f63;
+  --stratum-web: #a3a39e;
+  --stratum-ai: var(--signal);
   color-scheme: dark;
 }
-
-[data-depth="silver"] { --metal: var(--silver); }
-[data-depth="bronze"] { --metal: var(--bronze); }
 
 @theme inline {
   --color-slate: var(--slate);
@@ -45,8 +45,10 @@
   --color-trace: var(--trace);
   --color-reject: var(--reject);
   --color-metal: var(--metal);
-  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --color-signal: var(--signal);
+  --font-sans: "Red Hat Display Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Sometype Mono Variable", ui-monospace, monospace;
+  --font-code: "IBM Plex Mono", ui-monospace, monospace;
   --text-label: 0.75rem;
   --text-small: 0.9375rem;
   --text-lead: 1.1875rem;
@@ -61,30 +63,29 @@
 @layer base {
 html {
   /* Node-editor dot grid; OreField's dither sits on top of it when scripts run. */
-  background: var(--slate) radial-gradient(circle, color-mix(in srgb, var(--shale) 16%, transparent) 1px, transparent 1.5px) 0 0 / 24px 24px fixed;
+  background: var(--slate) radial-gradient(circle, color-mix(in srgb, var(--signal) 14%, transparent) 1px, transparent 1.5px) 0 0 / 24px 24px fixed;
   color: var(--quartz);
   font-family: var(--font-sans);
   font-size: 100%;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 4rem;
 }
 
 body {
   min-height: 100dvh;
-  font-size: 1.0625rem; /* 17px */
-  line-height: 1.55;
-  font-stretch: 100%;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--trace) 35%, transparent);
+  background: color-mix(in srgb, var(--signal) 35%, transparent);
   color: var(--quartz);
 }
 
 /* Visible, consistent keyboard focus everywhere. */
 :focus-visible {
-  outline: 2px solid var(--trace);
+  outline: 2px solid var(--signal);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -94,18 +95,18 @@ a { color: inherit; }
 }
 
 @layer components {
-/* Type scale: 13 / 15 / 17 / 21 / 26 / 36 / 56 / 59. */
+/* Type scale: 13 / 15 / 16 / 21 / 26 / 36 / 46. */
 .t-display {
-  font-size: clamp(2.25rem, 4.1vw, 3.7rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-  font-stretch: 112%;
+  font-size: clamp(2.25rem, 3.2vw, 2.875rem);
+  line-height: 0.97;
+  letter-spacing: -0.01em;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 .t-h1, .t-h2 { text-wrap: balance; }
-.t-h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.02; font-weight: 560; font-stretch: 112%; letter-spacing: -0.015em; }
-.t-h2 { font-size: clamp(1.875rem, 3vw, 2.25rem); line-height: 1.12; font-weight: 540; font-stretch: 110%; letter-spacing: -0.01em; }
-.t-h3 { font-size: 1.3125rem; line-height: 1.25; font-weight: 560; font-stretch: 104%; }
+.t-h1 { font-size: clamp(2rem, 2.8vw, 2.5rem); line-height: 1; font-weight: 900; letter-spacing: -0.01em; text-transform: uppercase; }
+.t-h2 { font-size: clamp(1.625rem, 2.6vw, 2rem); line-height: 1.1; font-weight: 800; letter-spacing: -0.005em; }
+.t-h3 { font-size: 1.3125rem; line-height: 1.25; font-weight: 700; }
 .t-small { font-size: 0.9375rem; line-height: 1.5; }
 .t-micro { font-size: 0.8125rem; line-height: 1.4; }
 
@@ -117,8 +118,8 @@ a { color: inherit; }
   font-variant-numeric: tabular-nums;
 }
 
-/* Raw text is set narrow; refined text is set wide. */
-.t-raw { font-stretch: 68%; font-weight: 400; letter-spacing: 0.005em; }
+/* Raw source text, as it arrived. */
+.t-raw { font-family: var(--font-code); font-weight: 400; }
 
 .measure { max-width: 64ch; }
 
@@ -129,7 +130,8 @@ a { color: inherit; }
   transition: grid-template-rows 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .reveal[data-open="true"] { grid-template-rows: 1fr; }
-.reveal > * { overflow: hidden; min-height: 0; }
+.reveal > * { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility 0s 320ms; }
+.reveal[data-open="true"] > * { visibility: visible; transition-delay: 0s; }
 
 /* Hallmarks read as struck into the surface, not printed on it. */
 .hallmark {
@@ -146,59 +148,127 @@ a { color: inherit; }
 .tap-ghost { position: relative; }
 .tap-ghost::after { content: ""; position: absolute; inset: -0.875rem 0; }
 
-/* Operator panels: a titled box on the patch. Panels sit above the cables. */
+/* Operators: titled boxes on the patch. Panels sit above the cables. */
 .panel {
   position: relative;
   z-index: 1;
   background: var(--slab);
   border: 1px solid var(--seam);
   border-radius: var(--radius-lg);
+  box-shadow: 0 14px 44px rgb(0 0 0 / 0.55);
 }
 .panel-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  min-height: 2.125rem;
-  padding: 0.25rem 0.75rem;
+  min-height: 1.875rem;
+  padding: 0.375rem 0.625rem;
   border-bottom: 1px solid var(--seam);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.4;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  line-height: 1.6;
   color: var(--shale);
 }
 .panel-tag {
   flex: none;
-  padding: 0 0.375rem;
+  padding: 1px 0.375rem;
   border-radius: var(--radius-sm);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: var(--metal);
-  background: color-mix(in srgb, var(--metal) 12%, transparent);
-  transition: color 300ms, background-color 300ms;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #e6e6d8;
+  background: #2a2a20;
 }
+.panel-tag[data-tag="DATA"] { color: #7cc2e3; background: #12303f; }
+.panel-tag[data-tag="SYS"] { color: var(--shale); background: #232326; }
+.panel-tag[data-tag="VIEW"], .panel-tag[data-tag="LIVE"] { color: var(--signal); background: #123c24; }
 
-/* Ports only make sense with cables, so they share the cables' breakpoint. */
+/* Ports only make sense with cables, so they share the patch layout's breakpoint. */
 .port {
   display: none;
   position: absolute;
-  top: 0.75rem;
-  width: 0.625rem;
-  height: 0.625rem;
-  border: 1.5px solid var(--metal);
-  border-radius: 999px;
+  z-index: 2;
+  top: calc(50% - 4.5px);
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--signal);
+  border-radius: 50%;
   background: var(--slate);
-  transition: border-color 300ms;
 }
-.port[data-side="left"] { left: -0.375rem; }
-.port[data-side="right"] { right: -0.375rem; }
-@media (min-width: 1024px) {
-  .port { display: block; }
+.port[data-side="left"] { left: -5px; }
+.port[data-side="right"] { right: -5px; }
+
+/*
+  The patch: panels float at set positions on wide screens. Everywhere else,
+  and in READ mode, they stack as a plain page.
+*/
+.stage { display: flex; flex-direction: column; gap: 1.25rem; padding: 1.25rem; }
+.stage > .op-sys { align-self: flex-start; width: min(100%, 18rem); }
+.op-ground { display: none; }
+
+@media (min-width: 1280px) {
+  html:not([data-mode="read"]) .port { display: block; }
+  html:not([data-mode="read"]) .op-ground { display: block; }
+  html:not([data-mode="read"]) .stage {
+    display: block;
+    position: relative;
+    height: 52.75rem;
+    padding: 0;
+  }
+  html:not([data-mode="read"]) .stage > .op {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+  }
+}
+@media (min-width: 1024px) and (max-width: 1279px), (min-width: 1280px) {
+  html[data-mode="read"] .stage, .stage { max-width: 76rem; margin-inline: auto; }
+}
+@media (min-width: 1280px) {
+  html:not([data-mode="read"]) .stage { max-width: none; }
 }
 
-/* A highlight runs the length of each cable, in step with the metal. */
+/* Inner pages: a title column and a content column, stacking below the patch breakpoint. */
+.page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem; align-items: start; }
+.page-col { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+@media (min-width: 1280px) {
+  .page { grid-template-columns: minmax(0, 31rem) minmax(0, 1fr); gap: 2.5rem; padding: 1.875rem 1.625rem; }
+  .page-side { position: sticky; top: 3.75rem; }
+}
+
+/* Small controls on the operators. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--signal) 4%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: var(--signal);
+  transition: background-color 150ms;
+}
+.chip:hover { background: color-mix(in srgb, var(--signal) 12%, transparent); }
+.chip[data-on="true"] { background: var(--signal); color: var(--slate); }
+.chip[data-quiet="true"] { border-color: var(--edge); color: var(--shale); background: transparent; }
+
+.op-row { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.1em; color: var(--shale); }
+.op-row b { width: 1.75rem; font-weight: 400; color: var(--signal); text-align: right; }
+.op-range { flex: 1; min-width: 0; height: 0.75rem; appearance: none; background: transparent; cursor: pointer; }
+.op-range::-webkit-slider-runnable-track { height: 2px; background: color-mix(in srgb, var(--signal) 45%, transparent); }
+.op-range::-moz-range-track { height: 2px; background: color-mix(in srgb, var(--signal) 45%, transparent); }
+.op-range::-webkit-slider-thumb { appearance: none; width: 12px; height: 5px; margin-top: -1.5px; border-radius: 1px; background: var(--quartz); }
+.op-range::-moz-range-thumb { width: 12px; height: 5px; border: 0; border-radius: 1px; background: var(--quartz); }
+
+/* A highlight runs the length of each cable. */
 .cable-run {
-  stroke-dasharray: 0.05 0.95;
+  stroke-dasharray: 0.04 0.96;
   animation: cable-run 7s linear infinite;
 }
 @keyframes cable-run {
@@ -206,17 +276,13 @@ a { color: inherit; }
   to { stroke-dashoffset: 0; }
 }
 
-/* Outlined headline. The fill paints over the stroke so overlapping variable-font contours stay hidden. */
-.hero-line {
-  display: block;
-  -webkit-text-stroke: 1.25px var(--quartz);
+/* Outlined headline. The fill paints over the stroke so overlapping contours stay hidden. */
+.ghost {
+  color: var(--slab);
+  -webkit-text-stroke: 2.6px var(--signal); /* The fill covers half of it, leaving 1.3px. */
   paint-order: stroke fill;
+  letter-spacing: 0.012em;
 }
-@media (min-width: 1024px) {
-  .hero-line { -webkit-text-stroke-width: 2px; }
-}
-.hero-raw { color: var(--slab); }
-.hero-fill { transition: color 1800ms cubic-bezier(0.2, 0.7, 0.2, 1); }
 
 .caret {
   display: inline-block;
@@ -231,6 +297,40 @@ a { color: inherit; }
   50% { opacity: 0; }
 }
 
+.status-dot { animation: status 2.4s ease-in-out infinite; }
+@keyframes status {
+  50% { opacity: 0.35; }
+}
+
+/* A view being cooked: a coarse dither burns off as the new project resolves. */
+.cook {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  image-rendering: pixelated;
+  background-color: color-mix(in srgb, var(--signal) 20%, var(--slab));
+  background-image:
+    linear-gradient(90deg, var(--signal) 50%, transparent 50%),
+    linear-gradient(var(--slab) 50%, transparent 50%);
+  background-size: 12px 12px, 9px 9px;
+  animation: cook 760ms steps(7) forwards;
+}
+@keyframes cook {
+  from { opacity: 0.85; }
+  to { opacity: 0; }
+}
+
+.playhead {
+  transform-origin: left;
+  background: linear-gradient(90deg, transparent, var(--signal));
+  animation: playhead 7.2s linear infinite;
+}
+@keyframes playhead {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -240,9 +340,11 @@ a { color: inherit; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .cable-run { display: none; }
+  .cable-run, .cook { display: none; }
+  .playhead { animation: none; transform: none; }
 }
 
-/* The Pause motion button: everything that runs for more than a few seconds stops. */
-html[data-motion="off"] .cable-run { display: none; }
-html[data-motion="off"] .caret { animation: none; }
+/* The motion switch: everything that runs for more than a few seconds stops. */
+html[data-motion="off"] .cable-run, html[data-motion="off"] .cook { display: none; }
+html[data-motion="off"] .caret, html[data-motion="off"] .status-dot { animation: none; }
+html[data-motion="off"] .playhead { animation-play-state: paused; }

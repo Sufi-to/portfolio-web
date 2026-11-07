@@ -13,19 +13,21 @@ export default function LabPage() {
   const lab = projects.filter((p) => p.shelf === "lab");
   return (
     <>
-      <PageIntro title="Lab">
-        Smaller builds and programme work. Each one says what it is: coursework, a prototype, or finished.
+      <div className="page">
+      <div className="page-col page-side">
+      <PageIntro name="lab_txt" title="Lab">
+        <p>Smaller builds and programme work. Each one says what it is: coursework, a prototype, or finished.</p>
       </PageIntro>
-      <div className="mx-auto mt-12 max-w-[76rem] px-5 sm:px-8">
-      <Panel name="lab_index" meta={`${lab.length} builds`} tag="DATA">
+      </div>
+      <Panel name="lab_index" meta={`${lab.length} builds`} tag="DATA" portId="lab" in="left" out="right">
       <ul>
         {lab.map((p, i) => (
-          <li key={p.slug} className={`grid gap-2 p-5 md:grid-cols-[16rem_1fr_auto] md:gap-8 ${i > 0 ? "border-t border-seam/70" : ""}`}>
-            <Link href={`/projects/${p.slug}/`} className="t-h3 hover:text-metal">
+          <li key={p.slug} className={`grid gap-1 p-3.5 md:grid-cols-[13rem_1fr_auto] md:gap-5 ${i > 0 ? "border-t border-seam/70" : ""}`}>
+            <Link href={`/projects/${p.slug}/`} className="text-[0.9375rem] font-bold hover:text-metal">
               {p.name}
             </Link>
-            <p className="text-quartz/85">{p.gold}</p>
-            <p className="t-micro text-shale md:text-right">
+            <p className="t-small text-quartz/85">{p.gold}</p>
+            <p className="t-data text-[0.625rem] text-shale md:text-right">
               {statusLabel[p.status]}, {p.year}
             </p>
           </li>

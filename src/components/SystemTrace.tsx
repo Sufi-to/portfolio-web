@@ -4,27 +4,29 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import type { Diagram, DiagramNode, DiagramScenario } from "@/content/types";
 import { keepStill } from "@/lib/motion";
 
-const CELL_W = 184;
-const CELL_H = 116;
-const NODE_W = 150;
-const NODE_H = 58;
 const PAD = 16;
+const CELL_H = 116;
+const NODE_H = 58;
+// Inside a view panel the diagram is drawn tighter, so it can fill a narrow frame.
+const FULL = { cell: 184, node: 150 };
+const TIGHT = { cell: 164, node: 148 };
+type Fit = typeof FULL;
 const HOP_MS = 430;
 
-const nodeBox = (n: DiagramNode) => {
-  const x = PAD + n.col * CELL_W + (CELL_W - NODE_W) / 2;
+const nodeBox = (n: DiagramNode, fit: Fit) => {
+  const x = PAD + n.col * fit.cell + (fit.cell - fit.node) / 2;
   const y = PAD + n.row * CELL_H + (CELL_H - NODE_H) / 2;
-  return { x, y, cx: x + NODE_W / 2, cy: y + NODE_H / 2 };
+  return { x, y, cx: x + fit.node / 2, cy: y + NODE_H / 2 };
 };
 
 /** Path between two nodes, leaving and entering on the facing edges. */
-function edgePath(a: DiagramNode, b: DiagramNode): string {
-  const A = nodeBox(a);
-  const B = nodeBox(b);
+function edgePath(a: DiagramNode, b: DiagramNode, fit: Fit): string {
+  const A = nodeBox(a, fit);
+  const B = nodeBox(b, fit);
   if (a.row === b.row && Math.abs(a.col - b.col) === 1) {
     const dir = Math.sign(b.col - a.col);
-    const x1 = A.cx + (dir * NODE_W) / 2;
-    const x2 = B.cx - (dir * NODE_W) / 2;
+    const x1 = A.cx + (dir * fit.node) / 2;
+    const x2 = B.cx - (dir * fit.node) / 2;
     return `M${x1} ${A.cy} L${x2} ${B.cy}`;
   }
   if (a.row === b.row) {
@@ -89,8 +91,9 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
   const cancelled = useRef(false);
 
   // Inside a panel the diagram is drawn smaller, so its text is set larger to stay readable.
-  const type = bare ? 1.25 : 1;
-  const width = diagram.cols * CELL_W + PAD * 2;
+  const type = bare ? 1.22 : 1;
+  const fit = bare ? TIGHT : FULL;
+  const width = diagram.cols * fit.cell + PAD * 2;
   const height = Math.max(diagram.rows, fitRows ?? 0) * CELL_H + PAD * 2 + 34;
 
   const stop = () => {
@@ -149,7 +152,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
       // Place the packet on the first node, then go.
       const first = nodes.get(s.path[0]);
       if (first && packet.current) {
-        const b = nodeBox(first);
+        const b = nodeBox(first, fit);
         packet.current.setAttribute("cx", String(b.cx));
         packet.current.setAttribute("cy", String(b.cy));
       }
@@ -179,9 +182,10 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
   const rejected = finished && scenario.stopsAt;
 
   return (
-    <div ref={root} className={bare ? "flex flex-1 flex-col" : "rounded-lg border border-seam bg-slate"}>
-      <div className={`flex flex-wrap items-center gap-2 border-b border-seam px-3 py-2.5 sm:px-4 ${bare ? "lg:min-h-[5.25rem]" : ""}`}>
-        <span className="mr-1 t-micro text-shale">Replay a request:</span>
+    <div ref={root} className={bare ? "relative flex flex-1 flex-col" : "rounded-md border border-seam bg-slate"}>
+      {bare && <span aria-hidden className="cook" />}
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-seam px-2.5 py-1.5">
+        <span className="mr-1 font-[family-name:var(--font-mono)] text-[0.5625rem] tracking-[0.1em] text-shale">REPLAY</span>
         {diagram.scenarios.map((s) => {
           const on = s.id === scenario.id && hop >= 0;
           return (
@@ -192,9 +196,9 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
                 play(s);
               }}
               aria-pressed={on}
-              className={`tap rounded-full border px-3 py-1 t-micro transition-colors ${
-                on ? "border-trace/70 bg-trace/10 text-quartz" : "border-edge text-quartz/85 hover:border-shale"
-              }`}
+              className="chip tap"
+              data-quiet={!on}
+              data-on={on}
             >
               {s.label}
             </button>
@@ -205,7 +209,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
       <div className="hidden overflow-x-auto overscroll-x-contain sm:block">
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="block h-auto w-full min-w-[640px]"
+          className={`block h-auto w-full ${bare ? "" : "min-w-[640px]"}`}
           role="img"
           aria-label={`${title} architecture: ${diagram.nodes.map((n) => n.label).join(", ")}`}
         >
@@ -230,7 +234,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
                 ref={(el) => {
                   if (el) pathRefs.current.set(key, el);
                 }}
-                d={edgePath(na, nb)}
+                d={edgePath(na, nb, fit)}
                 fill="none"
                 stroke={on ? "var(--trace)" : "var(--seam)"}
                 strokeWidth={on ? 1.75 : 1.25}
@@ -241,7 +245,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
           })}
 
           {diagram.nodes.map((n) => {
-            const b = nodeBox(n);
+            const b = nodeBox(n, fit);
             const isOn = visited.has(n.id);
             const isStop = rejected && scenario.stopsAt === n.id;
             const isEnd = finished && !scenario.stopsAt && scenario.path.at(-1) === n.id;
@@ -251,7 +255,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
                 <rect
                   x={b.x}
                   y={b.y}
-                  width={NODE_W}
+                  width={fit.node}
                   height={NODE_H}
                   rx={n.kind === "store" ? 14 : 7}
                   fill={isStop ? "color-mix(in srgb, var(--reject) 14%, var(--slab))" : isOn ? "color-mix(in srgb, var(--trace) 10%, var(--slab))" : "var(--slab)"}
@@ -268,7 +272,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
                     {n.sub}
                   </text>
                 )}
-                {isEnd && <circle cx={b.x + NODE_W - 8} cy={b.y + 8} r={3.5} fill="var(--trace)" />}
+                {isEnd && <circle cx={b.x + fit.node - 8} cy={b.y + 8} r={3.5} fill="var(--trace)" />}
               </g>
             );
           })}
@@ -291,7 +295,7 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
       <p className="sr-only" aria-live="polite">
         {asked && finished ? scenario.outcome : ""}
       </p>
-      <div className={`border-t border-seam px-4 py-3 t-data text-shale ${bare ? "min-h-[21rem] flex-1 sm:min-h-[15.5rem]" : ""}`}>
+      <div className={`border-t border-seam px-4 py-3 t-data text-shale ${bare ? "min-h-[21rem] flex-1 text-[0.6875rem] sm:min-h-[6rem] sm:py-2" : ""}`}>
         {hop < 0 ? (
           <p>Choose a request above to replay its path through the system.</p>
         ) : (
@@ -305,14 +309,14 @@ export function SystemTrace({ diagram, title, autoplay = false, bare = false, fi
               const n = nodes.get(id)!;
               const stopHere = rejected && scenario.stopsAt === id;
               return (
-                <li key={`${id}-${i}`} className={stopHere ? "text-reject" : ""}>
+                <li key={`${id}-${i}`} className={`${stopHere ? "text-reject" : ""} ${bare && i < hop ? "sm:hidden" : ""}`}>
                   <span className="text-shale/90">{String(i + 1).padStart(2, "0")}</span> {n.label}
                   {n.sub ? <span className="text-shale/90">: {n.sub}</span> : null}
                   {stopHere ? " rejected" : ""}
                 </li>
               );
             })}
-            {finished && <li className={`pt-1 font-sans text-small ${rejected ? "text-reject" : "text-quartz"}`}>{scenario.outcome}</li>}
+            {finished && <li className={`pt-1 ${bare ? "" : "font-sans text-small"} ${rejected ? "text-reject" : "text-quartz"}`}>{scenario.outcome}</li>}
           </ol>
         )}
       </div>

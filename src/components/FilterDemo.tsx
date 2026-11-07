@@ -19,9 +19,9 @@ export function FilterDemo() {
 
   return (
     <Panel name="input_filter" meta="runs in your browser" tag="LIVE">
-      <div className="space-y-4 p-5 sm:p-6">
+      <div className="space-y-3 p-3.5">
         <div>
-          <h2 className="t-h3">Try the input filter</h2>
+          <h2 className="text-[0.9375rem] font-bold">Try the input filter</h2>
           <p className="mt-1 t-small text-quartz/80">
             These are the ten patterns from{" "}
             {source && (
@@ -46,7 +46,7 @@ export function FilterDemo() {
 
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((p) => (
-            <button key={p} onClick={() => setText(p)} className="tap max-w-full truncate rounded-full border border-edge px-3 py-1 t-micro text-quartz/85 transition-colors hover:border-shale">
+            <button key={p} onClick={() => setText(p)} className="chip tap max-w-full truncate" data-quiet="true">
               {p}
             </button>
           ))}

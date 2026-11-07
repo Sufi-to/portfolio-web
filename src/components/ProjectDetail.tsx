@@ -35,8 +35,8 @@ export function ProjectDetail({
   const at = (d: Depth) => order.indexOf(depth) >= order.indexOf(d);
 
   return (
-    <div className="space-y-8">
-      {showGold && <p className="measure text-lead leading-[1.6]">{p.gold}</p>}
+    <div className="space-y-5">
+      {showGold && <p className="measure text-base leading-[1.55]">{p.gold}</p>}
 
       <dl className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
         <div>
@@ -63,7 +63,7 @@ export function ProjectDetail({
           <dt className="t-micro text-shale">Stack</dt>
           <dd className="mt-1 flex flex-wrap gap-1.5">
             {p.stack.map((s) => (
-              <span key={s} className="rounded-sm border border-seam px-1.5 py-0.5 t-micro text-quartz/85">
+              <span key={s} className="rounded-sm border border-seam px-1.5 py-0.5 t-data text-[0.625rem] text-quartz/85">
                 {s}
               </span>
             ))}
@@ -72,15 +72,15 @@ export function ProjectDetail({
       </dl>
 
       {at("silver") && p.silver && (
-        <div className="space-y-8">
-          <div className="grid gap-8 md:grid-cols-2">
+        <div className="space-y-5">
+          <div className="grid gap-5 md:grid-cols-2">
             <div>
-              <H className="t-micro text-silver">The problem</H>
-              <p className="mt-2 text-quartz/90">{p.silver.problem}</p>
+              <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">The problem</H>
+              <p className="mt-1.5 t-small text-quartz/90">{p.silver.problem}</p>
             </div>
             <div>
-              <H className="t-micro text-silver">What I built</H>
-              <p className="mt-2 text-quartz/90">{p.silver.build}</p>
+              <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">What I built</H>
+              <p className="mt-1.5 t-small text-quartz/90">{p.silver.build}</p>
             </div>
           </div>
 
@@ -89,11 +89,11 @@ export function ProjectDetail({
           {p.diagram && !hideTrace && <SystemTrace diagram={p.diagram} title={p.name} />}
 
           <div>
-            <H className="t-micro text-silver">Decisions</H>
+            <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">Decisions</H>
             <ul className="mt-3 grid gap-x-8 gap-y-5 md:grid-cols-3">
               {p.silver.decisions.map((d) => (
-                <li key={d.title} className="border-l border-silver/40 pl-4">
-                  <p className="font-[560] [font-stretch:104%]">{d.title}</p>
+                <li key={d.title} className="border-l border-signal/40 pl-3">
+                  <p className="t-small font-bold">{d.title}</p>
                   <p className="mt-1 t-small text-quartz/80">{d.body}</p>
                 </li>
               ))}
@@ -101,7 +101,7 @@ export function ProjectDetail({
           </div>
 
           <div>
-            <H className="t-micro text-silver">What it doesn&rsquo;t do</H>
+            <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">What it doesn&rsquo;t do</H>
             <ul className="mt-2 space-y-1 t-small text-quartz/80">
               {p.silver.boundaries.map((b) => (
                 <li key={b} className="flex gap-2">
@@ -131,7 +131,7 @@ export function ProjectDetail({
                   className="group grid grid-cols-[minmax(0,1fr)] gap-1 px-4 py-3 transition-colors hover:bg-slab-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-6"
                 >
                   <span className="t-small">{e.claim}</span>
-                  <span className="t-data text-shale [overflow-wrap:anywhere] group-hover:text-bronze">
+                  <span className="t-data text-shale [overflow-wrap:anywhere] group-hover:text-signal">
                     {e.path}
                     {e.line ? `:${e.line}` : ""} @ {e.sha.slice(0, 7)}
                   </span>

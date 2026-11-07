@@ -1,16 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { projects, shelfLabel, domainLabel, statusLabel } from "@/content/projects";
 import type { Domain, Project, Shelf, Status } from "@/content/types";
 import { parseQuery, matches, toggleToken, hasToken, toSql } from "@/lib/query";
 import { useDepth, isTyping, shortcutsOn } from "./DepthProvider";
 import { Panel } from "./Panel";
+import { DepthOp } from "./OreOps";
 import { ProjectDetail } from "./ProjectDetail";
+import { SystemTrace } from "./SystemTrace";
 
 const SHELVES: Shelf[] = ["featured", "lab", "archive", "foundations"];
 const DOMAINS: Domain[] = ["ai", "data", "backend", "fullstack", "systems"];
 const STATUSES: Status[] = ["shipped", "prototype", "coursework", "archived"];
+
+const DOT: Record<Domain, string> = { ai: "bg-signal", data: "bg-[#7cc2e3]", backend: "bg-[#c77dba]", fullstack: "bg-[#e0a43a]", systems: "bg-shale" };
 
 const EXAMPLES = ["domain:ai status:shipped", "stack:fastapi", "databricks", "shelf:foundations"];
 
@@ -19,10 +24,11 @@ const EXAMPLES = ["domain:ai status:shipped", "stack:fastapi", "databricks", "sh
  * write into the same query, the equivalent SQL shown under the results, and
  * rows that expand to the current depth.
  */
-export function ProjectExplorer() {
+export function ProjectExplorer({ intro }: { intro: React.ReactNode }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<Set<string>>(new Set());
   const [showSql, setShowSql] = useState(false);
+  const [preview, setPreview] = useState(projects[0].slug);
   const input = useRef<HTMLInputElement>(null);
   const { depth } = useDepth();
 
@@ -34,6 +40,7 @@ export function ProjectExplorer() {
     const hash = window.location.hash.slice(1);
     if (hash && projects.some((p) => p.slug === hash)) {
       setOpen(new Set([hash]));
+      setPreview(hash);
       requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
     }
   }, []);
@@ -76,141 +83,163 @@ export function ProjectExplorer() {
         key={`${key}:${value}`}
         onClick={() => setQ((cur) => toggleToken(cur, key, value))}
         aria-pressed={on}
-        className={`tap rounded-full border px-3 py-1.5 t-micro transition-colors ${
-          on ? "border-trace/70 bg-trace/10 text-quartz" : "border-edge text-quartz/80 hover:border-shale"
-        }`}
+        className="chip tap"
+        data-quiet={!on}
       >
         {label}
       </button>
     );
   };
 
+  const active = projects.find((p) => p.slug === preview) ?? projects[0];
+  let counter = 0;
+
   return (
-    <div>
-      {/* Query bar */}
-      <Panel name="catalog_query" meta={`${results.length} of ${projects.length} rows`} tag="SYS" className="border-edge focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-trace">
-        <label className="flex items-center gap-3 px-4">
-          <span aria-hidden className="t-data text-trace">›</span>
-          <span className="sr-only">Filter projects</span>
-          <input
-            ref={input}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => e.key === "Escape" && setQ("")}
-            placeholder="Try domain:ai status:shipped"
-            className="w-full bg-transparent py-3.5 t-data text-small text-quartz placeholder:text-shale focus-visible:outline-transparent"
-            spellCheck={false}
-            autoComplete="off"
-          />
-          {q ? (
-            <button onClick={() => setQ("")} className="shrink-0 t-micro text-shale hover:text-quartz">
-              Clear
-            </button>
-          ) : (
-            <kbd className="hidden shrink-0 rounded-sm border border-seam px-1.5 t-data text-shale sm:block">/</kbd>
-          )}
-        </label>
-      </Panel>
+    <div className="page">
+      <div className="page-col">
+        {intro}
 
-      <div className="mt-4 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 w-14 t-micro text-shale">Domain</span>
-          {DOMAINS.map((d) => chip("domain", d, domainLabel[d]))}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 w-14 t-micro text-shale">Status</span>
-          {STATUSES.map((s) => chip("status", s, statusLabel[s]))}
-        </div>
-      </div>
-
-      {/* Result line and the same query as SQL */}
-      <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 border-b border-seam pb-3">
-        <p className="t-small text-shale" aria-live="polite">
-          {results.length === projects.length ? `All ${projects.length} projects` : `${results.length} of ${projects.length} projects`}
-          {parsed.unknown.length > 0 && <span className="text-reject"> (ignored: {parsed.unknown.join(", ")})</span>}
-        </p>
-        <button onClick={() => setShowSql((s) => !s)} aria-expanded={showSql} className="t-micro text-shale underline decoration-seam underline-offset-4 hover:text-quartz">
-          {showSql ? "Hide the SQL" : "Show this as SQL"}
-        </button>
-      </div>
-      <div className="reveal" data-open={showSql}>
-        <div>
-          <pre className="mt-3 overflow-x-auto rounded-lg border border-seam bg-slate p-4 t-data text-quartz/85">{toSql(parsed)}</pre>
-        </div>
-      </div>
-
-      {results.length === 0 && (
-        <div className="py-16">
-          <p className="t-h3">Nothing matches that filter.</p>
-          <p className="mt-2 t-small text-shale">Try one of these:</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {EXAMPLES.map((ex) => (
-              <button key={ex} onClick={() => setQ(ex)} className="rounded-sm border border-seam px-2 py-1 t-data text-quartz hover:border-trace/60">
-                {ex}
+        <Panel name="catalog_query" meta={`${results.length} of ${projects.length} rows`} tag="SYS" className="focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-trace">
+          <label className="flex items-center gap-2 border-b border-seam px-3.5">
+            <span aria-hidden className="t-data text-signal">&gt;</span>
+            <span className="sr-only">Filter projects</span>
+            <input
+              ref={input}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => e.key === "Escape" && setQ("")}
+              placeholder="Try domain:ai status:shipped"
+              className="w-full bg-transparent py-2.5 t-data text-quartz placeholder:text-shale focus-visible:outline-transparent"
+              spellCheck={false}
+              autoComplete="off"
+            />
+            {q ? (
+              <button onClick={() => setQ("")} className="shrink-0 t-data text-shale hover:text-quartz">
+                CLEAR
               </button>
-            ))}
+            ) : (
+              <kbd className="hidden shrink-0 rounded-sm border border-seam px-1.5 t-data text-shale sm:block">/</kbd>
+            )}
+          </label>
+          <div className="flex flex-wrap gap-1.5 p-2.5">
+            {DOMAINS.map((d) => chip("domain", d, domainLabel[d]))}
+            {STATUSES.map((v) => chip("status", v, statusLabel[v]))}
           </div>
-        </div>
-      )}
+          <div className="flex flex-wrap items-baseline justify-between gap-3 border-t border-seam px-3.5 py-2 t-data text-[0.625rem] text-shale">
+            <p aria-live="polite">
+              {results.length === projects.length ? `ALL ${projects.length} PROJECTS` : `${results.length} OF ${projects.length} PROJECTS`}
+              {parsed.unknown.length > 0 && <span className="text-reject"> (ignored: {parsed.unknown.join(", ")})</span>}
+            </p>
+            <button onClick={() => setShowSql((v) => !v)} aria-expanded={showSql} className="tap hover:text-signal">
+              {showSql ? "HIDE THE SQL" : "SHOW THIS AS SQL"}
+            </button>
+          </div>
+          <div className="reveal" data-open={showSql}>
+            <div>
+              <pre className="overflow-x-auto border-t border-seam p-3.5 t-data text-[0.6875rem] text-quartz/85">{toSql(parsed)}</pre>
+            </div>
+          </div>
+        </Panel>
 
-      {grouped.map((g) => (
-        <section key={g.shelf} aria-labelledby={`shelf-${g.shelf}`} className="mt-12">
-          <h2 id={`shelf-${g.shelf}`} className="flex items-baseline gap-3">
-            <span className="t-h2">{shelfLabel[g.shelf]}</span>
-            <span className="t-data text-shale">{g.items.length}</span>
-          </h2>
-          <Panel name={`${g.shelf}_shelf`} meta={`${g.items.length} rows`} tag="DATA" className="mt-4">
-            <ul>
-              {g.items.map((p) => (
-                <Row key={p.slug} p={p} open={open.has(p.slug)} onToggle={() => toggle(p.slug)} depth={depth} />
-              ))}
-            </ul>
+        <DepthOp />
+
+        <Panel name="work_index" meta="preview · open" tag="DATA" portId="index" out="right">
+          {results.length === 0 && (
+            <div className="p-4">
+              <p className="t-h3">Nothing matches that filter.</p>
+              <p className="mt-1 t-small text-shale">Try one of these:</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {EXAMPLES.map((ex) => (
+                  <button key={ex} onClick={() => setQ(ex)} className="chip tap">
+                    {ex}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {grouped.map((g, gi) => (
+            <section key={g.shelf} aria-labelledby={`shelf-${g.shelf}`} className="p-2">
+              <h2 id={`shelf-${g.shelf}`} className="flex items-baseline justify-between border-b border-seam px-2.5 pb-1.5 font-[family-name:var(--font-mono)] text-[0.625rem] font-normal tracking-[0.14em] text-shale">
+                <span>
+                  <span className="mr-3 font-bold text-signal">{String(gi + 1).padStart(2, "0")}</span>
+                  {shelfLabel[g.shelf].toUpperCase()}
+                </span>
+                <span>{g.items.length} OPS</span>
+              </h2>
+              <ul className="mt-1 space-y-0.5">
+                {g.items.map((p) => (
+                  <Row key={p.slug} p={p} n={++counter} on={p.slug === active.slug} open={open.has(p.slug)} onPreview={() => setPreview(p.slug)} onToggle={() => {
+                    setPreview(p.slug);
+                    toggle(p.slug);
+                  }} depth={depth} />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </Panel>
+      </div>
+
+      <div className="page-col page-side max-xl:hidden xl:max-h-[calc(100dvh-5rem)] xl:overflow-y-auto">
+        <Panel name={`${active.slug.replaceAll("-", "_")}_view`} meta={active.diagram ? "replay" : "summary"} tag="VIEW" portId="pview" in="left">
+          {active.diagram ? (
+            <SystemTrace key={active.slug} diagram={active.diagram} title={active.name} autoplay bare />
+          ) : (
+            <div className="p-4">
+              <p className="t-h3">{active.name}</p>
+              <p className="mt-2 t-small text-quartz/90">{active.gold}</p>
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-4 border-t border-seam px-2.5 py-1.5 font-[family-name:var(--font-mono)] text-[0.5625rem] tracking-[0.1em] text-shale">
+            <span className="min-w-0 truncate uppercase">{active.stack.slice(0, 4).join(" → ")}</span>
+            <Link href={`/projects/${active.slug}/`} className="shrink-0 text-signal hover:underline">
+              OPEN PROJECT &rarr;
+            </Link>
+          </div>
+        </Panel>
+        {depth !== "gold" && (
+          <Panel name={`${active.slug.replaceAll("-", "_")}_detail`} meta={`${depth} depth`} tag="TXT">
+            <div className="p-4">
+              <ProjectDetail project={active} hideTrace />
+            </div>
           </Panel>
-        </section>
-      ))}
+        )}
+      </div>
     </div>
   );
 }
 
-function Row({ p, open, onToggle, depth }: { p: Project; open: boolean; onToggle: () => void; depth: string }) {
+function Row({ p, n, on, open, onPreview, onToggle, depth }: { p: Project; n: number; on: boolean; open: boolean; onPreview: () => void; onToggle: () => void; depth: string }) {
   // Mount the panel on first open and keep it, so closing can animate.
   const [mounted, setMounted] = useState(open);
   useEffect(() => {
     if (open) setMounted(true);
   }, [open]);
   return (
-    <li id={p.slug} className="scroll-mt-24 border-b border-seam/70 last:border-b-0">
-      <button
-        onClick={onToggle}
-        aria-expanded={open}
-        aria-controls={`panel-${p.slug}`}
-        className="group grid w-full grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 px-4 py-5 text-left md:grid-cols-[minmax(12rem,16rem)_1fr_auto]"
-      >
-        <span className="flex items-baseline gap-3">
-          <span
-            aria-hidden
-            className={`inline-block h-2 w-2 shrink-0 translate-y-[-1px] rounded-full border transition-colors ${
-              open ? "border-metal bg-metal" : "border-shale/60 group-hover:border-quartz"
-            }`}
-          />
-          <span className="t-h3 transition-[font-stretch] duration-300 group-hover:[font-stretch:112%]">{p.name}</span>
-        </span>
-        <span className="order-3 col-span-2 pl-5 text-quartz/80 md:order-none md:col-span-1 md:pl-0 md:line-clamp-2">{p.gold}</span>
-        <span className="flex items-baseline gap-3 justify-self-end whitespace-nowrap">
-          <span className="hidden t-micro text-shale sm:inline">{statusLabel[p.status]}</span>
-          <span className="t-data text-shale">{p.year}</span>
-          <span aria-hidden className={`t-data text-shale transition-transform duration-300 ${open ? "rotate-45" : ""}`}>+</span>
-        </span>
-      </button>
-      <div id={`panel-${p.slug}`} className="reveal" data-open={open} role="region" aria-label={`${p.name} details`}>
+    <li id={p.slug} className="scroll-mt-16" onMouseEnter={onPreview}>
+      <div className={`group relative flex items-center rounded-md border transition-colors ${on ? "border-signal/40 bg-signal/[0.05]" : "border-transparent"}`}>
+        <span aria-hidden className={`absolute -left-px inset-y-1 w-0.5 rounded bg-signal transition-opacity ${on ? "opacity-100" : "opacity-0"}`} />
+        <button
+          onClick={onToggle}
+          onFocus={onPreview}
+          aria-expanded={open}
+          aria-controls={`panel-${p.slug}`}
+          className="flex min-h-[2.75rem] min-w-0 flex-1 items-center gap-2.5 px-2.5 py-1 text-left font-[family-name:var(--font-mono)] xl:min-h-0"
+        >
+          <span aria-hidden className="text-[0.5625rem] tracking-[0.1em] text-shale">{String(n).padStart(2, "0")}</span>
+          <span aria-hidden className={`h-2 w-2 shrink-0 rounded-[1px] ${DOT[p.domains[0]]}`} />
+          <span aria-hidden className="text-[0.5rem] text-signal/70">&#9656;</span>
+          <span className={`min-w-0 truncate text-[0.8125rem] sm:shrink-0 ${on ? "text-signal" : "text-quartz"}`}>{p.slug.replaceAll("-", "_")}</span>
+          <span aria-hidden className="hidden min-w-0 flex-1 truncate text-[0.5625rem] uppercase tracking-[0.1em] text-shale sm:block">{p.role}</span>
+          <span className={`ml-auto shrink-0 rounded-sm border px-1 text-[0.5rem] tracking-[0.1em] sm:ml-0 ${p.status === "shipped" ? "border-signal/50 text-signal" : "border-edge text-shale"}`}>{statusLabel[p.status].toUpperCase()}</span>
+          <span aria-hidden className="hidden text-[0.5625rem] tracking-[0.1em] text-shale sm:inline">{p.year}</span>
+        </button>
+      </div>
+      <div id={`panel-${p.slug}`} className="reveal xl:hidden" data-open={open} role="region" aria-label={`${p.name} details`}>
         <div>
           {mounted && (
-            <div className="px-4 pb-8 pt-1 sm:pl-9" inert={!open}>
-              <p className="mb-6 t-micro text-shale">
-                Showing {depth} detail.{" "}
-                <span className="hidden md:inline">Press G, S or B to change it.</span>
-                <span className="md:hidden">Change it with the switch at the top.</span>
-              </p>
+            <div className="px-3 pb-6 pt-3" inert={!open}>
+              <p className="mb-4 t-micro text-shale">Showing {depth} detail.</p>
               <ProjectDetail project={p} />
             </div>
           )}
