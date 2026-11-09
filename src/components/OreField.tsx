@@ -2,7 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import { keepStill } from "@/lib/motion";
+import bronze from "@/data/bronze.json";
 import { getOre, PALETTES, subscribeOre } from "@/lib/ore";
+
+// Commits per month, on a square-root scale from 0 to 1, as in the commit strata chart.
+const totals = bronze.months.map((m) => m.systems + m.web + m.ai);
+const peak = Math.max(...totals);
+const MONTHS = totals.map((n) => Math.sqrt(n / peak));
 
 const FRAME_MS = 83; // About 12 frames a second.
 const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + 0.5) / 16);
@@ -30,8 +36,9 @@ export function OreField() {
 
     const resize = () => {
       scale = getOre().scale;
-      canvas.width = Math.ceil(window.innerWidth / scale);
-      canvas.height = Math.ceil(window.innerHeight / scale);
+      // A hidden or collapsed window can report zero; a canvas needs at least one pixel.
+      canvas.width = Math.max(1, Math.ceil(window.innerWidth / scale));
+      canvas.height = Math.max(1, Math.ceil(window.innerHeight / scale));
       img = ctx.createImageData(canvas.width, canvas.height);
       trail = new Float32Array(canvas.width * canvas.height);
     };
@@ -52,7 +59,8 @@ export function OreField() {
       const k = scale / 3;
       const { data, width, height } = img;
       const t = drift;
-      const veins = ore.noise === "RIDGE";
+      const veins = ore.noise !== "WAVE";
+      const git = ore.noise === "GIT";
       // Each wave depends only on a row, a column or a diagonal, so one pass over
       // those lines replaces four sines per cell. Summing them gives slow noise;
       // folding the sum into veins gives thin lines instead of soft blobs.
@@ -60,13 +68,16 @@ export function OreField() {
       const across = Float32Array.from({ length: width }, (_, x) => Math.sin(x * k * fx + t));
       const down = Float32Array.from({ length: height }, (_, y) => Math.sin(y * k * fy - t * 0.7));
       const diag = Float32Array.from({ length: width + height }, (_, n) => Math.sin(n * k * fd + t * 0.4));
+      // In git mode each column is a month, oldest on the left: busy months carry
+      // rich veins, quiet ones fade to almost nothing.
+      const weight = Float32Array.from({ length: width }, (_, x) => 0.25 + 1.35 * MONTHS[Math.min(MONTHS.length - 1, Math.floor((x / width) * MONTHS.length))]);
       const anti = Float32Array.from({ length: width + height }, (_, n) => (veins ? Math.sin((n - height) * k * fe - t * 0.5) : 0));
       for (let y = 0, i = 0, c = 0; y < height; y++) {
         for (let x = 0; x < width; x++, i += 4, c++) {
           trail[c] *= ore.trail;
           const n = across[x] + down[y] + diag[x + y] + anti[x - y + height];
           const f = veins ? 1 - Math.min(1, Math.abs(n) / 2.2) : n / 6 + 0.5;
-          const v = f * f * f - bias + trail[c];
+          const v = f * f * f * (git ? weight[x] : 1) - bias + trail[c];
           data[i] = r;
           data[i + 1] = g;
           data[i + 2] = b;

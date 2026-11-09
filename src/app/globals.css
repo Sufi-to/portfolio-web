@@ -214,7 +214,7 @@ a { color: inherit; }
   html:not([data-mode="read"]) .stage {
     display: block;
     position: relative;
-    height: 57.5rem;
+    height: 59rem;
     padding: 0;
   }
   html:not([data-mode="read"]) .stage > .op {
@@ -237,6 +237,42 @@ a { color: inherit; }
 @media (min-width: 1280px) {
   .page { grid-template-columns: minmax(0, 31rem) minmax(0, 1fr); gap: 2.5rem; padding: 1.875rem 1.625rem; }
   .page-side { position: sticky; top: 3.75rem; }
+}
+
+/* Assay marks: a figure whose proof opens in place. */
+.assay {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline dotted color-mix(in srgb, var(--signal) 70%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.assay::after {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 2px;
+  vertical-align: super;
+  background: var(--signal);
+}
+.assay:hover, .assay[aria-expanded="true"] { color: var(--signal); }
+.assay-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: 30;
+  display: block;
+  width: min(18rem, 80vw);
+  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--slab);
+  box-shadow: 0 14px 44px rgb(0 0 0 / 0.6);
+  font-family: var(--font-mono);
+  text-align: left;
+  white-space: normal;
 }
 
 /* Small controls on the operators. */

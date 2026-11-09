@@ -1,6 +1,6 @@
 // The ground's settings, shared by the canvas and the operators that control it.
 
-export type Noise = "RIDGE" | "WAVE";
+export type Noise = "GIT" | "RIDGE" | "WAVE";
 export type Pattern = "BAYER2" | "BAYER4";
 export type Palette = "GRN" | "AMB" | "ICE";
 
@@ -16,7 +16,7 @@ export interface Ore {
 
 export const PALETTES: Record<Palette, string> = { GRN: "#3dff88", AMB: "#ffb547", ICE: "#7cc2e3" };
 
-let state: Ore = { noise: "RIDGE", speed: 1, trail: 0.78, pattern: "BAYER2", density: 0.5, scale: 3, palette: "GRN" };
+let state: Ore = { noise: "GIT", speed: 1, trail: 0.78, pattern: "BAYER2", density: 0.5, scale: 3, palette: "GRN" };
 const listeners = new Set<() => void>();
 
 export const getOre = () => state;

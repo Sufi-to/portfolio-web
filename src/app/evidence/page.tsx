@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/PageIntro";
 import { Panel } from "@/components/Panel";
+import { SlagPanel } from "@/components/SlagPanel";
 import { evidenceKey, evidenceUrl, featured } from "@/content/projects";
 import report from "@/data/evidence-report.json";
 
@@ -34,6 +35,7 @@ export default function EvidencePage() {
           </p>
         </div>
       </Panel>
+      <SlagPanel />
       </div>
       <div className="page-col">
         {featured.map((p) => (

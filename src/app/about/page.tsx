@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageIntro } from "@/components/PageIntro";
 import { Panel } from "@/components/Panel";
 import { CommitStrata } from "@/components/CommitStrata";
+import { SlagPanel } from "@/components/SlagPanel";
 import { profile } from "@/content/profile";
 import bronze from "@/data/bronze.json";
 
@@ -108,6 +109,8 @@ export default function AboutPage() {
           </dl>
         </div>
       </Panel>
+
+      <SlagPanel />
 
       <section aria-label="Commit history">
         <CommitStrata />

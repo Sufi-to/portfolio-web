@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { featured, projects } from "@/content/projects";
 import { keepStill } from "@/lib/motion";
 import { useDepth } from "./DepthProvider";
+import { Assayed } from "./Assayed";
 import { Hallmark } from "./Hallmark";
 import { Panel } from "./Panel";
 import { ProjectDetail } from "./ProjectDetail";
@@ -59,7 +60,7 @@ export function WorkIndex({ children }: { children: React.ReactNode }) {
           Selected work
         </h2>
 
-        <Panel name="work_index" meta="preview · open" tag="DATA" portId="work" out="right" className="op order-3 flex flex-col" style={{ "--x": "1.625rem", "--y": "29.75rem", "--w": "28.5rem" } as React.CSSProperties}>
+        <Panel name="work_index" meta="preview · open" tag="DATA" portId="work" out="right" className="op order-3 flex flex-col" style={{ "--x": "1.625rem", "--y": "30.25rem", "--w": "28.5rem" } as React.CSSProperties}>
           <ol className="space-y-0.5 p-2">
             {featured.map((f, i) => {
               const on = f.slug === p.slug;
@@ -109,7 +110,7 @@ export function WorkIndex({ children }: { children: React.ReactNode }) {
           {/* The selected project in a sentence; readable whether or not anything moves. */}
           <div className="flex flex-1 flex-col gap-2 border-t border-seam p-3.5">
             <h3 className="text-base font-bold">{p.name}</h3>
-            <p className="text-[0.8125rem] leading-[1.5] text-quartz/90">{p.gold}</p>
+            <p className="text-[0.8125rem] leading-[1.5] text-quartz/90"><Assayed text={p.gold} /></p>
             <Hallmark project={p} className="mt-auto" />
           </div>
         </Panel>
@@ -128,7 +129,7 @@ export function WorkIndex({ children }: { children: React.ReactNode }) {
           </Panel>
         )}
 
-        <Panel name="run_clock · 7.2s" tag="SYS" portId="clock" out="right" className="op op-sys order-6" style={{ "--x": "max(31rem, 34.3%)", "--y": "43rem", "--w": "11rem" } as React.CSSProperties}>
+        <Panel name="run_clock · 7.2s" tag="SYS" portId="clock" out="right" className="op op-sys order-6" style={{ "--x": "max(31rem, 34.3%)", "--y": "45.5rem", "--w": "11rem" } as React.CSSProperties}>
           <div className="p-2.5">
             <button className="chip tap" data-quiet={!cycling} aria-pressed={false} onClick={() => setAuto((a) => !a)}>
               <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${cycling ? "status-dot bg-signal" : "bg-shale"}`} />

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { depthInfo } from "@/content/site";
+import bronze from "@/data/bronze.json";
 import type { Depth } from "@/content/types";
 import { getOre, setOre, subscribeOre, type Noise, type Palette, type Pattern } from "@/lib/ore";
 import { useDepth } from "./DepthProvider";
@@ -10,7 +11,7 @@ import { Panel } from "./Panel";
 const place = (x: string, y: string, w: string) => ({ "--x": x, "--y": y, "--w": w }) as React.CSSProperties;
 const useOre = () => useSyncExternalStore(subscribeOre, getOre, getOre);
 
-const NOISE: Noise[] = ["RIDGE", "WAVE"];
+const NOISE: Noise[] = ["GIT", "RIDGE", "WAVE"];
 const PATTERN: Pattern[] = ["BAYER2", "BAYER4"];
 const PALETTE: Palette[] = ["GRN", "AMB", "ICE"];
 const next = <T,>(list: T[], value: T) => list[(list.indexOf(value) + 1) % list.length];
@@ -31,11 +32,18 @@ export function OreOps() {
   const ground = "op op-sys op-ground";
   return (
     <>
-      <Panel name="ore_01 · noise" tag="SYS" portId="ore1" out="right" className={ground} style={place("10.8%", "22.75rem", "11.25rem")}>
+      <Panel name="ore_01 · source" tag="SYS" portId="ore1" out="right" className={ground} style={place("10.8%", "22.25rem", "12.25rem")}>
         <div className="space-y-2 p-2.5">
-          <button className="chip" onClick={() => setOre({ noise: next(NOISE, ore.noise) })}>
-            TYPE &#9656; {ore.noise}
-          </button>
+          <div className="flex items-center gap-2">
+            <button className="chip whitespace-nowrap" onClick={() => setOre({ noise: next(NOISE, ore.noise) })}>
+              SRC &#9656; {ore.noise}
+            </button>
+            {ore.noise === "GIT" && (
+              <span className="op-row whitespace-nowrap" title="Each column of the ground is a month of commits, oldest on the left">
+                {bronze.totalCommits.toLocaleString("en-US")} COMMITS
+              </span>
+            )}
+          </div>
           <Range label="SPEED" value={ore.speed} min={0} max={3} step={0.01} shown={ore.speed.toFixed(2)} onChange={(speed) => setOre({ speed })} />
         </div>
       </Panel>
@@ -73,12 +81,11 @@ const DOT: Record<Depth, string> = { gold: "bg-gold", silver: "bg-silver", bronz
 export function DepthOp() {
   const { depth, setDepth } = useDepth();
   return (
-    <Panel name="depth_select" meta="detail level" tag="SYS" portId="depth" in="left" out="right" className="op op-sys order-4" style={place("max(31rem, 37%)", "33rem", "16rem")}>
-      <div role="group" aria-label="Detail level" className="flex items-center gap-1 p-2.5">
+    <Panel name="depth_select" meta="detail level" tag="SYS" portId="depth" in="left" out="right" className="op op-sys order-4" style={place("max(30.75rem, 37%)", "38.5rem", "13.75rem")}>
+      <div role="group" aria-label="Detail level" className="flex items-center gap-1 p-2">
         {ORDER.map((d, i) => (
           <span key={d} className="contents">
-            {i > 0 && <span aria-hidden className="text-[0.5rem] text-shale">&#9654;</span>}
-            <button className="chip tap flex-1 justify-center" data-quiet={d !== depth} aria-pressed={d === depth} title={`${depthInfo[d].hint} (${depthInfo[d].key})`} onClick={() => setDepth(d)}>
+            <button className="chip tap flex-1 justify-center px-1.5" data-quiet={d !== depth} aria-pressed={d === depth} title={`${depthInfo[d].hint} (${depthInfo[d].key})`} onClick={() => setDepth(d)}>
               <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${DOT[d]}`} />
               {depthInfo[d].label.toUpperCase()}
             </button>

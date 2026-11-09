@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Depth, Project } from "@/content/types";
 import { evidenceUrl, statusLabel } from "@/content/projects";
 import { useDepth } from "./DepthProvider";
+import { Assayed } from "./Assayed";
 import { MediaGallery } from "./MediaGallery";
 import { Panel } from "./Panel";
 import { SystemTrace } from "./SystemTrace";
@@ -36,7 +37,7 @@ export function ProjectDetail({
 
   return (
     <div className="space-y-5">
-      {showGold && <p className="measure text-base leading-[1.55]">{p.gold}</p>}
+      {showGold && <p className="measure text-base leading-[1.55]"><Assayed text={p.gold} /></p>}
 
       <dl className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
         <div>
@@ -81,11 +82,11 @@ export function ProjectDetail({
           <div className="grid gap-5 md:grid-cols-2">
             <div>
               <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">The problem</H>
-              <p className="mt-1.5 t-small text-quartz/90">{p.silver.problem}</p>
+              <p className="mt-1.5 t-small text-quartz/90"><Assayed text={p.silver.problem} /></p>
             </div>
             <div>
               <H className="t-data text-[0.625rem] uppercase tracking-[0.1em] text-signal">What I built</H>
-              <p className="mt-1.5 t-small text-quartz/90">{p.silver.build}</p>
+              <p className="mt-1.5 t-small text-quartz/90"><Assayed text={p.silver.build} /></p>
             </div>
           </div>
 
@@ -99,7 +100,7 @@ export function ProjectDetail({
               {p.silver.decisions.map((d) => (
                 <li key={d.title} className="border-l border-signal/40 pl-3">
                   <p className="t-small font-bold">{d.title}</p>
-                  <p className="mt-1 t-small text-quartz/80">{d.body}</p>
+                  <p className="mt-1 t-small text-quartz/80"><Assayed text={d.body} /></p>
                 </li>
               ))}
             </ul>

@@ -80,7 +80,10 @@ async function api(path) {
 }
 
 const user = await api("users/Sufi-to");
-const owned = (await api("users/Sufi-to/repos?per_page=100&type=owner")).filter((r) => !r.fork && !r.private && !SKIP.has(r.full_name));
+const listed = await api("users/Sufi-to/repos?per_page=100&type=owner");
+const owned = listed.filter((r) => !r.fork && !r.private && !SKIP.has(r.full_name));
+// Forks are other people's code; the site says how many it leaves out.
+const forks = listed.filter((r) => r.fork && !r.private).length;
 const REPOS = [...owned.map((r) => [r.full_name, stratumFor(r)]), ...Object.entries(COLLABORATIONS)];
 
 // Language totals over Tomas's own public repositories, in bytes of code.
@@ -151,6 +154,7 @@ const snapshot = {
     affiliation: user.company,
     hireable: user.hireable === true,
     ownPublicRepos: owned.length,
+    forks,
     languages: [...languages]
       .sort((x, y) => y[1] - x[1])
       .slice(0, 8)
