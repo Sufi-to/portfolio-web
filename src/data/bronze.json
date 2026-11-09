@@ -9,11 +9,11 @@
     "languages": [
       {
         "name": "Python",
-        "share": 61.8
+        "share": 61.6
       },
       {
         "name": "TypeScript",
-        "share": 11.8
+        "share": 12
       },
       {
         "name": "HTML",
@@ -25,7 +25,7 @@
       },
       {
         "name": "JavaScript",
-        "share": 5.9
+        "share": 6
       },
       {
         "name": "CSS",
@@ -42,7 +42,7 @@
     ]
   },
   "identities": "^(Sufi-to|Tomas Teclehaimanot|Tomas Debrezion|Tomas Tecle)$",
-  "totalCommits": 1334,
+  "totalCommits": 1335,
   "repos": [
     {
       "repo": "Sufi-to/alx-system_engineering-devops",
@@ -264,9 +264,9 @@
     {
       "repo": "Sufi-to/portfolio-web",
       "stratum": "web",
-      "commits": 8,
+      "commits": 9,
       "first": "2026-10-26",
-      "last": "2026-11-08"
+      "last": "2026-11-09"
     }
   ],
   "months": [
@@ -672,7 +672,7 @@
     {
       "month": "2026-11",
       "systems": 0,
-      "web": 6,
+      "web": 7,
       "ai": 0,
       "repos": [
         "portfolio-web"
