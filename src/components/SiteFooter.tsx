@@ -49,6 +49,11 @@ export function SiteFooter() {
               Evidence
             </Link>
           </li>
+          <li>
+            <Link className={link} href="/certificate/">
+              Certificate
+            </Link>
+          </li>
         </ul>
       </div>
     </footer>

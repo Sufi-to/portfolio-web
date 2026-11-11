@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageIntro } from "@/components/PageIntro";
 import { Panel } from "@/components/Panel";
 import { profile } from "@/content/profile";
@@ -19,6 +20,11 @@ export default function ContactPage() {
       <PageIntro name="contact_txt" title="Contact" lead="Email is the fastest way to reach me.">
         <p>
           Based in {profile.location}.{profile.available && " Open to work."}
+        </p>
+        <p>
+          <Link href="/certificate/" className="tap underline decoration-seam underline-offset-4 hover:text-signal">
+            Print a one-page summary of the verified work
+          </Link>
         </p>
       </PageIntro>
       </div>

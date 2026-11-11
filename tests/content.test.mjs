@@ -42,3 +42,11 @@ test("every assay figure appears in the site's text and resolves to a claim", as
     assert.ok(a.evidence.expect.length > 0);
   }
 });
+
+test("the certificate's fingerprint depends on the evidence", async () => {
+  const { createHash } = await import("node:crypto");
+  const print = (rows) => createHash("sha256").update(JSON.stringify(rows)).digest("hex");
+  const rows = allEvidence.map(({ evidence }) => [evidenceKey(evidence), evidence.sha, true]);
+  const flipped = rows.map((r, i) => (i === 0 ? [r[0], r[1], false] : r));
+  assert.notEqual(print(rows), print(flipped));
+});
