@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09",
+  "generatedAt": "2026-11-16",
   "github": {
     "location": "Abu Dhabi",
     "affiliation": "Zayed University",
@@ -9,11 +9,11 @@
     "languages": [
       {
         "name": "Python",
-        "share": 61.6
+        "share": 61.4
       },
       {
         "name": "TypeScript",
-        "share": 12
+        "share": 12.3
       },
       {
         "name": "HTML",
@@ -21,7 +21,7 @@
       },
       {
         "name": "C",
-        "share": 6.7
+        "share": 6.6
       },
       {
         "name": "JavaScript",
@@ -42,7 +42,7 @@
     ]
   },
   "identities": "^(Sufi-to|Tomas Teclehaimanot|Tomas Debrezion|Tomas Tecle)$",
-  "totalCommits": 1335,
+  "totalCommits": 1336,
   "repos": [
     {
       "repo": "Sufi-to/alx-system_engineering-devops",
@@ -264,9 +264,9 @@
     {
       "repo": "Sufi-to/portfolio-web",
       "stratum": "web",
-      "commits": 9,
+      "commits": 10,
       "first": "2026-10-26",
-      "last": "2026-11-09"
+      "last": "2026-11-11"
     }
   ],
   "months": [
@@ -672,7 +672,7 @@
     {
       "month": "2026-11",
       "systems": 0,
-      "web": 7,
+      "web": 8,
       "ai": 0,
       "repos": [
         "portfolio-web"
